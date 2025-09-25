@@ -26,9 +26,7 @@
   },
   "keywords": [
     "maml",
-    "configuration",
-    "parser",
-    "stringifier"
+    "parser"
   ],
   "homepage": "https://github.com/maml-dev/maml.js#readme",
   "bugs": {
