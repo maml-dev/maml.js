@@ -1,0 +1,46 @@
+{
+  "name": "maml.js",
+  "version": "0.0.1",
+  "description": "MAML parser",
+  "type": "module",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "files": [
+    "build"
+  ],
+  "scripts": {
+    "fmt": "prettier --write src",
+    "fmt:check": "prettier --check src",
+    "build": "tsc",
+    "test": "tsc && vitest"
+  },
+  "devDependencies": {
+    "prettier": "^3.6.2",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
+  },
+  "prettier": {
+    "semi": false,
+    "singleQuote": true,
+    "endOfLine": "lf"
+  },
+  "keywords": [
+    "maml",
+    "configuration",
+    "parser",
+    "stringifier"
+  ],
+  "homepage": "https://github.com/maml-dev/maml.js#readme",
+  "bugs": {
+    "url": "https://github.com/maml-dev/maml.js/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maml-dev/maml.js.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "license": "MIT",
+  "author": "Anton Medvedev <anton@medv.io>"
+}
