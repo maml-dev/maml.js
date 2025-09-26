@@ -1,1 +1,1 @@
-export declare function parse(): void;
+export { parse } from './parse.js';
