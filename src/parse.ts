@@ -295,14 +295,12 @@ export function parse(source: string): any {
 
   function expectValue(value: unknown) {
     if (value === undefined) {
-      throw new SyntaxError(errorSnippet(`JSON value expected`))
+      throw new SyntaxError(errorSnippet(`Value expected`))
     }
   }
 
   function errorSnippet(message = `Unexpected character '${ch}'`) {
-    if (!ch) {
-      message = 'Unexpected end of input'
-    }
+    if (!ch) message = 'Unexpected end of input'
     const lines = buffer.slice(-40).split('\n')
     const lastLine = lines.pop()!
     const source =

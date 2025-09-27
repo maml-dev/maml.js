@@ -284,13 +284,12 @@ export function parse(source) {
     }
     function expectValue(value) {
         if (value === undefined) {
-            throw new SyntaxError(errorSnippet(`JSON value expected`));
+            throw new SyntaxError(errorSnippet(`Value expected`));
         }
     }
     function errorSnippet(message = `Unexpected character '${ch}'`) {
-        if (!ch) {
+        if (!ch)
             message = 'Unexpected end of input';
-        }
         const lines = buffer.slice(-40).split('\n');
         const lastLine = lines.pop();
         const source = lines.map((line) => `    ${line}\n`).join('') + `    ${lastLine}\n`;
