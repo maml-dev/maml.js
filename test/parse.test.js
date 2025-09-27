@@ -40,3 +40,10 @@ describe('parse', () => {
     })
   }
 })
+
+describe('parse', () => {
+  test('bigint', () => {
+    const output = parse(`9007199254740992`) // Number.MAX_SAFE_INTEGER + 1
+    expect(output).toStrictEqual(9007199254740992n)
+  })
+})
