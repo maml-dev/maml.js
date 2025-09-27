@@ -268,10 +268,10 @@ export function parse(source) {
     function toSafeNumber(str) {
         if (str == '-0')
             return -0;
-        const maxSafeInteger = Number.MAX_SAFE_INTEGER;
-        const minSafeInteger = Number.MIN_SAFE_INTEGER;
         const num = BigInt(str);
-        return num >= minSafeInteger && num <= maxSafeInteger ? Number(num) : num;
+        return num >= Number.MIN_SAFE_INTEGER && num <= Number.MAX_SAFE_INTEGER
+            ? Number(num)
+            : num;
     }
     function expectValue(value) {
         if (value === undefined) {
