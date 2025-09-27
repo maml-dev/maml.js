@@ -280,13 +280,23 @@ false
 
 === trailing comma and mixed whitespace
 {
-  "x": {"y": [0,1,2,],},
+  "x" : {"y" : [0,1,2,] ,} ,
 }
 ---
 {"x":{"y":[0,1,2]}}
 
 === full-line comment before object
 # top-level note
+{"a":1}
+---
+{"a":1}
+
+=== multiple full-line comment before object + newlines
+# comment 1
+# comment 2
+# comment 3
+
+
 {"a":1}
 ---
 {"a":1}
@@ -412,5 +422,207 @@ false
 
 === comment at EOF
 {"a":1} # EOF
+---
+{"a":1}
+
+=== multiple comment at EOF
+{"a":1} # comment 1
+# comment 2
+# comment 3
+---
+{"a":1}
+
+=== object with newline separators
+{"a":1
+"b":2}
+---
+{"a":1,"b":2}
+
+=== array with newline separators
+[1
+2
+3]
+---
+[1,2,3]
+
+=== nested with newline separators
+{
+  "a": [
+    1
+    2
+    3
+  ]
+  "b": {
+    "x": true
+    "y": null
+  }
+}
+---
+{"a":[1,2,3],"b":{"x":true,"y":null}}
+
+=== mix commas and newlines (array)
+[0
+1,2
+3]
+---
+[0,1,2,3]
+
+=== mix commas and newlines (object)
+{"a":1
+,"b":2
+,"c":3}
+---
+{"a":1,"b":2,"c":3}
+
+=== array of objects with newline separators
+[
+  {"id":1}
+  {"id":2}
+  {"id":3}
+]
+---
+[{"id":1},{"id":2},{"id":3}]
+
+=== object with arrays using newline separators
+{
+  "nums": [
+    10
+    20
+    30
+  ]
+  "strs": [
+    "a"
+    "b"
+  ]
+}
+---
+{"nums":[10,20,30],"strs":["a","b"]}
+
+=== array with comments and newline separators
+[
+  1  # one
+  2  # two
+  3  # three
+]
+---
+[1,2,3]
+
+=== object with comments and newline separators
+{
+  "a": 1  # first
+  "b": 2  # second
+  # end
+}
+---
+{"a":1,"b":2}
+
+=== consecutive newlines as separators (array)
+[1
+
+2
+
+
+
+3]
+---
+[1,2,3]
+
+=== consecutive newlines as separators (object)
+{
+  "a":1
+
+
+  "b":2
+}
+---
+{"a":1,"b":2}
+
+=== array with trailing newline before close
+[42
+
+]
+---
+[42]
+
+=== object with trailing newline before close
+{
+  "k": "v"
+
+}
+---
+{"k":"v"}
+
+=== interleaved comments and newlines (array)
+[
+  # start
+  100
+  # middle
+  200
+  # end
+]
+---
+[100,200]
+
+=== interleaved comments and newlines (object)
+{
+  # start
+  "x": true
+  # mid
+  "y": false
+}
+---
+{"x":true,"y":false}
+
+=== array of arrays with newline separators
+[
+  [1
+   2]
+  [3
+   4]
+]
+---
+[[1,2],[3,4]]
+
+=== object with special character keys (newline separators)
+{
+  "a-b":1
+  "a b":2
+  "a:b":3
+  "a,b":4
+}
+---
+{"a-b":1,"a b":2,"a:b":3,"a,b":4}
+
+=== unicode values with newline separators
+{
+  "text": "Привет"
+  "emoji": "😀"
+  "u": "\u263A"
+}
+---
+{"text":"Привет","emoji":"😀","u":"\u263A"}
+
+=== exponents with newline separators (keep numeric forms)
+[
+  1e3
+  2E+2
+  7e-1
+]
+---
+[1e3,2E+2,7e-1]
+
+=== mixed whitespace + newline separators
+{  "a":1
+,  "b": { "x":2
+          "y":3 }
+,  "c": [ 4
+          5
+          6 ]  }
+---
+{"a":1,"b":{"x":2,"y":3},"c":[4,5,6]}
+
+=== mixed whitespace + comment + newline separator + trailing comma
+{  "a": 1  # comment
+,  }
 ---
 {"a":1}

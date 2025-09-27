@@ -6,9 +6,10 @@ import { parse } from '../build/index.js'
 
 test('parse', ()=>{
   const input = `
-{
-  "text": "Line1\\nLine2", # trailing
-}
+[
+  1
+  2
+]
   `
   parse(input)
 })

@@ -174,7 +174,7 @@ export function parse(source: string): any {
       const value = parseValue()
       expectValue(value)
       obj[key] = value
-      skipWhitespace()
+      const newlineAfterValue = skipWhitespace()
       if ((ch as string) === '}') {
         next()
         return obj
@@ -185,6 +185,8 @@ export function parse(source: string): any {
           next()
           return obj
         }
+      } else if (newlineAfterValue) {
+        continue
       } else {
         throw new SyntaxError(errorSnippet())
       }
@@ -204,7 +206,7 @@ export function parse(source: string): any {
       const value = parseValue()
       expectValue(value)
       array.push(value)
-      skipWhitespace()
+      const newLineAfterValue = skipWhitespace()
       if ((ch as string) === ']') {
         next()
         return array
@@ -215,6 +217,8 @@ export function parse(source: string): any {
           next()
           return array
         }
+      } else if (newLineAfterValue) {
+        continue
       } else {
         throw new SyntaxError(errorSnippet())
       }
@@ -242,20 +246,24 @@ export function parse(source: string): any {
     throw new SyntaxError(errorSnippet())
   }
 
-  function skipWhitespace() {
+  function skipWhitespace(): boolean {
+    let hasNewline = false
     while (isWhitespace(ch)) {
+      hasNewline ||= ch === '\n'
       next()
     }
-    skipComment()
+    const hasNewlineAfterComment = skipComment()
+    return hasNewline || hasNewlineAfterComment
   }
 
-  function skipComment() {
+  function skipComment(): boolean {
     if (ch === '#') {
       while (!done && (ch as string) !== '\n') {
         next()
       }
-      skipWhitespace()
+      return skipWhitespace()
     }
+    return false
   }
 
   function isWhitespace(ch: string) {

@@ -34,7 +34,6 @@ export function parse(source) {
             parseKeyword('true', true) ??
             parseKeyword('false', false) ??
             parseKeyword('null', null);
-        skipWhitespace();
         return value;
     }
     function parseString() {
@@ -168,7 +167,7 @@ export function parse(source) {
             const value = parseValue();
             expectValue(value);
             obj[key] = value;
-            skipWhitespace();
+            const newlineAfterValue = skipWhitespace();
             if (ch === '}') {
                 next();
                 return obj;
@@ -180,6 +179,9 @@ export function parse(source) {
                     next();
                     return obj;
                 }
+            }
+            else if (newlineAfterValue) {
+                continue;
             }
             else {
                 throw new SyntaxError(errorSnippet());
@@ -200,7 +202,7 @@ export function parse(source) {
             const value = parseValue();
             expectValue(value);
             array.push(value);
-            skipWhitespace();
+            const newLineAfterValue = skipWhitespace();
             if (ch === ']') {
                 next();
                 return array;
@@ -212,6 +214,9 @@ export function parse(source) {
                     next();
                     return array;
                 }
+            }
+            else if (newLineAfterValue) {
+                continue;
             }
             else {
                 throw new SyntaxError(errorSnippet());
@@ -238,18 +243,22 @@ export function parse(source) {
         throw new SyntaxError(errorSnippet());
     }
     function skipWhitespace() {
+        let hasNewline = false;
         while (isWhitespace(ch)) {
+            hasNewline ||= ch === '\n';
             next();
         }
-        skipComment();
+        const hasNewlineAfterComment = skipComment();
+        return hasNewline || hasNewlineAfterComment;
     }
     function skipComment() {
         if (ch === '#') {
             while (!done && ch !== '\n') {
                 next();
             }
-            skipWhitespace();
+            return skipWhitespace();
         }
+        return false;
     }
     function isWhitespace(ch) {
         return ch === ' ' || ch === '\n' || ch === '\t' || ch === '\r';
