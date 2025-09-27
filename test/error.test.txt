@@ -143,6 +143,14 @@ SyntaxError: Unexpected character "," on line 1.
     [1,,2]
     ...^
 
+=== missing separator in array
+[1 2]
+---
+SyntaxError: Expected comma or newline between values on line 1.
+
+    [1 2]
+    ...^
+
 === trailing data after value
 {"a":1} {"b":2}
 ---

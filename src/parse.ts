@@ -91,8 +91,6 @@ export function parse(source: string): any {
         throw new SyntaxError(
           errorSnippet(`Unescaped control character ${JSON.stringify(ch)}`),
         )
-      } else if (ch === undefined) {
-        throw new SyntaxError(errorSnippet())
       } else {
         str += ch
       }
@@ -220,7 +218,7 @@ export function parse(source: string): any {
       } else if (newLineAfterValue) {
         continue
       } else {
-        throw new SyntaxError(errorSnippet())
+        throw new SyntaxError(errorSnippet('Expected comma or newline between values'))
       }
     }
   }

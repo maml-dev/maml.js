@@ -83,9 +83,6 @@ export function parse(source) {
             else if (ch < '\x1F') {
                 throw new SyntaxError(errorSnippet(`Unescaped control character ${JSON.stringify(ch)}`));
             }
-            else if (ch === undefined) {
-                throw new SyntaxError(errorSnippet());
-            }
             else {
                 str += ch;
             }
@@ -220,7 +217,7 @@ export function parse(source) {
                 continue;
             }
             else {
-                throw new SyntaxError(errorSnippet());
+                throw new SyntaxError(errorSnippet('Expected comma or newline between values'));
             }
         }
     }
