@@ -204,15 +204,12 @@ false
  "c" :
  { "d" : "e" }  }
 ---
-{  "a" : 1 , "b" :
- [ 1 , 2 , 3 ] ,
- "c" :
- { "d" : "e" }  }
+{"a": 1, "b": [ 1 , 2 , 3 ], "c": { "d": "e" }}
 
 === whitespace variations (array)
 [  1 ,  { "x" : 2 }  , [ 3 , 4 ]  ]
 ---
-[  1 ,  { "x" : 2 }  , [ 3 , 4 ]  ]
+[1, { "x": 2 }, [ 3, 4 ]]
 
 === object with unicode and escapes mixed
 {"text":"Line1\nLine2\u263A","emoji":"\uD83D\uDE80","slash":"a\/b","quote":"\""}
@@ -228,3 +225,192 @@ false
 [[],{},[[],{}],{}]
 ---
 [[],{},[[],{}],{}]
+
+=== object trailing comma
+{"a":1,}
+---
+{"a":1}
+
+=== array trailing comma
+[1,2,3,]
+---
+[1,2,3]
+
+=== nested trailing commas
+{"a":[1,2,], "b":{"x":1,},}
+---
+{"a":[1,2],"b":{"x":1}}
+
+=== trailing comma after comment (object)
+{
+  "a": 1, # keep a
+}
+---
+{"a":1}
+
+=== trailing comma after comment (array)
+[
+  1, # first
+]
+---
+[1]
+
+=== array of objects with trailing commas
+[
+  {"id":1,},
+  {"id":2,},
+]
+---
+[{"id":1},{"id":2}]
+
+=== object with last value array trailing comma
+{"nums":[10,20,30,],}
+---
+{"nums":[10,20,30]}
+
+=== single-element array with trailing comma
+[42,]
+---
+[42]
+
+=== single-pair object with trailing comma and spaces
+{ "k": "v",  }
+---
+{"k":"v"}
+
+=== trailing comma and mixed whitespace
+{
+  "x": {"y": [0,1,2,],},
+}
+---
+{"x":{"y":[0,1,2]}}
+
+=== full-line comment before object
+# top-level note
+{"a":1}
+---
+{"a":1}
+
+=== inline comment after pair
+{"a":1 # apples
+}
+---
+{"a":1}
+
+=== inline comment after closing brace
+{"a":1} # done
+---
+{"a":1}
+
+=== comments between entries (object)
+{
+  "a": 1,  # first
+  # mid-line comment
+  "b": 2
+}
+---
+{"a":1,"b":2}
+
+=== comments between elements (array)
+[
+  1,  # one
+  # two incoming
+  2,
+  3 # last
+]
+---
+[1,2,3]
+
+=== comment between key and colon
+{
+  "a" # key a
+  : 1
+}
+---
+{"a":1}
+
+=== comment between colon and value
+{
+  "a": # value follows
+  1
+}
+---
+{"a":1}
+
+=== nested structure with comments
+{
+  "obj": {
+    # inside obj
+    "k": "v" # end
+  },
+  "arr": [
+    # within array
+    1,2 # end
+  ] # outer end
+}
+---
+{"obj":{"k":"v"},"arr":[1,2]}
+
+=== top-level number with trailing comment
+123 # count
+---
+123
+
+=== string containing hash (not a comment)
+"# not a comment"
+---
+"# not a comment"
+
+=== object with comment and trailing comma
+{
+  "a": 1, # trailing comma ok
+}
+---
+{"a":1}
+
+=== array with comment and trailing comma
+[
+  "x", # keep x
+]
+---
+["x"]
+
+=== trailing comma on both levels with comments
+{
+  "inner": {
+    "list": [
+      1, # a
+      2, # b
+    ], # list end
+  }, # inner end
+}
+---
+{"inner":{"list":[1,2]}}
+
+=== trailing comma after multiline string with comment
+{
+  "text": "Line1\nLine2", # trailing
+}
+---
+{"text":"Line1\nLine2"}
+
+=== comments around commas in array
+[ 1 # a
+, 2 # b
+, 3 # c
+]
+---
+[1,2,3]
+
+=== array of objects with inline comments
+[
+  {"a":1} # first
+  , {"a":2} # second
+]
+---
+[{"a":1},{"a":2}]
+
+=== comment at EOF
+{"a":1} # EOF
+---
+{"a":1}

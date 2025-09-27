@@ -1,5 +1,5 @@
 export function parse(source: string): any {
-  if (typeof source !== 'string') throw TypeError('source must be a string');
+  if (typeof source !== 'string') throw TypeError('source must be a string')
 
   let pos = 0, lineNumber = 1, buffer = '', lastChar: string, done = false
 
@@ -7,7 +7,7 @@ export function parse(source: string): any {
     if (pos < source.length) {
       lastChar = source[pos]
       pos++
-    } else{
+    } else {
       lastChar = ''
       done = true
     }
@@ -234,28 +234,11 @@ export function parse(source: string): any {
   }
 
   function skipComment() {
-    if (lastChar === '/') {
-      next()
-      if (lastChar === '/') {
-        while (!done && lastChar as string !== '\n') {
-          next()
-        }
-        skipWhitespace()
-      } else if (lastChar === '*') {
-        while (!done) {
-          next()
-          if (lastChar === '*') {
-            next()
-            if (lastChar === '/') {
-              next()
-              break
-            }
-          }
-        }
-        skipWhitespace()
-      } else {
-        throw new SyntaxError(errorSnippet())
+    if (lastChar === '#') {
+      while (!done && lastChar as string !== '\n') {
+        next()
       }
+      skipWhitespace()
     }
   }
 

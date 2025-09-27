@@ -4,6 +4,16 @@ import path from 'node:path'
 import { URL } from 'node:url'
 import { parse } from '../build/index.js'
 
+test('parse', ()=>{
+  const input = `
+{
+  "text": "Line1\\nLine2", # trailing
+}
+  `
+  parse(input)
+})
+
+
 function loadTestCases() {
   const __dirname = new URL('.', import.meta.url).pathname
   const content = fs.readFileSync(path.join(__dirname, 'parse.test.txt'), 'utf8')

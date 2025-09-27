@@ -240,30 +240,11 @@ export function parse(source) {
         skipComment();
     }
     function skipComment() {
-        if (lastChar === '/') {
-            next();
-            if (lastChar === '/') {
-                while (!done && lastChar !== '\n') {
-                    next();
-                }
-                skipWhitespace();
+        if (lastChar === '#') {
+            while (!done && lastChar !== '\n') {
+                next();
             }
-            else if (lastChar === '*') {
-                while (!done) {
-                    next();
-                    if (lastChar === '*') {
-                        next();
-                        if (lastChar === '/') {
-                            next();
-                            break;
-                        }
-                    }
-                }
-                skipWhitespace();
-            }
-            else {
-                throw new SyntaxError(errorSnippet());
-            }
+            skipWhitespace();
         }
     }
     function isWhitespace(ch) {
