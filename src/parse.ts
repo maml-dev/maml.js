@@ -157,13 +157,13 @@ export function parse(source: string): any {
       return obj
     }
     while (true) {
-      if ((ch as string) !== '"') {
-        throw new SyntaxError(errorSnippet())
+      let key: string
+      if ((ch as string) === '"') {
+        key = parseString()!
+      } else {
+        key = parseKey()
       }
-      const key = parseString()
-      if (key === undefined) {
-        throw new SyntaxError(errorSnippet())
-      }
+
       skipWhitespace()
       if ((ch as string) !== ':') {
         throw new SyntaxError(errorSnippet())
@@ -189,6 +189,19 @@ export function parse(source: string): any {
         throw new SyntaxError(errorSnippet('Expected comma or newline between key-value pairs'))
       }
     }
+  }
+
+
+  function parseKey() {
+    let identifier = ''
+    while (/[A-Za-z0-9_-]/.test(ch)) {
+      identifier += ch
+      next()
+    }
+    if (identifier === '') {
+      throw new SyntaxError(errorSnippet())
+    }
+    return identifier
   }
 
   function parseArray() {

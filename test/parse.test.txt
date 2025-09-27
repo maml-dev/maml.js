@@ -632,3 +632,128 @@ false
 ,  }
 ---
 {"a":1}
+
+=== identifier keys basic
+{a:1, b:2, c_3:3, foo-bar:4}
+---
+{"a":1,"b":2,"c_3":3,"foo-bar":4}
+
+=== identifier digit-only key (string in result)
+{1234:"id"}
+---
+{"1234":"id"}
+
+=== identifier with leading underscore
+{_private:true}
+---
+{"_private":true}
+
+=== identifier with hyphen and underscore
+{foo_bar-baz:42}
+---
+{"foo_bar-baz":42}
+
+=== mix quoted and identifier keys
+{foo:1,"bar":2,"baz-qux":3,quux_corge:4}
+---
+{"foo":1,"bar":2,"baz-qux":3,"quux_corge":4}
+
+=== digit-only identifiers with leading zeros (kept as strings)
+{0012:"pad",0:"zero"}
+---
+{"0012":"pad","0":"zero"}
+
+=== reserved words as identifier keys (treated as strings)
+{true:1,false:2,null:3}
+---
+{"true":1,"false":2,"null":3}
+
+=== nested objects with identifier keys
+{outer:{inner_key:{deep-n:7}}}
+---
+{"outer":{"inner_key":{"deep-n":7}}}
+
+=== array of objects with identifier keys
+[{id:1},{id:2},{user_name:"a-b"}]
+---
+[{"id":1},{"id":2},{"user_name":"a-b"}]
+
+=== identifier keys with comments and trailing comma
+{
+  a:1, # first
+  b:2, # second
+}
+---
+{"a":1,"b":2}
+
+=== identifier keys with newline separators (no commas)
+{
+  a:1
+  b:2
+  c_3:3
+}
+---
+{"a":1,"b":2,"c_3":3}
+
+=== identifier keys with newline separators and arrays
+{
+  items: [
+    1
+    2
+    3
+  ]
+  meta: {count:3}
+}
+---
+{"items":[1,2,3],"meta":{"count":3}}
+
+=== identifier keys with trailing comma after comment and newline
+{
+  key1: "v1", # comment
+  key2: "v2",
+}
+---
+{"key1":"v1","key2":"v2"}
+
+=== quoted unicode key next to identifier key
+{"Привет":"hi", world:"мир"}
+---
+{"Привет":"hi","world":"мир"}
+
+=== digit-only identifier keys nested
+{data:{1234:"id",5678:"id2"}}
+---
+{"data":{"1234":"id","5678":"id2"}}
+
+=== identifiers resembling exponents (letters + digits)
+{e10:1, E10:2}
+---
+{"e10":1,"E10":2}
+
+=== deep mix of quoted and identifier keys with newline separators
+{
+  a:{b:{c:1
+        "d-e":2}}
+  arr:[
+    {x:1}
+    {y:2}
+  ]
+}
+---
+{"a":{"b":{"c":1,"d-e":2}},"arr":[{"x":1},{"y":2}]}
+
+=== identifier keys with comments as separators
+{
+  first: 1  # keep
+  second: 2 # keep
+  # end
+}
+---
+{"first":1,"second":2}
+
+=== identifier keys with mixed separators (commas + newlines)
+{alpha:1
+,beta:2
+,gamma:3}
+---
+{"alpha":1,"beta":2,"gamma":3}

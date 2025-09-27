@@ -150,12 +150,12 @@ export function parse(source) {
             return obj;
         }
         while (true) {
-            if (ch !== '"') {
-                throw new SyntaxError(errorSnippet());
+            let key;
+            if (ch === '"') {
+                key = parseString();
             }
-            const key = parseString();
-            if (key === undefined) {
-                throw new SyntaxError(errorSnippet());
+            else {
+                key = parseKey();
             }
             skipWhitespace();
             if (ch !== ':') {
@@ -185,6 +185,17 @@ export function parse(source) {
                 throw new SyntaxError(errorSnippet('Expected comma or newline between key-value pairs'));
             }
         }
+    }
+    function parseKey() {
+        let identifier = '';
+        while (/[A-Za-z0-9_-]/.test(ch)) {
+            identifier += ch;
+            next();
+        }
+        if (identifier === '') {
+            throw new SyntaxError(errorSnippet());
+        }
+        return identifier;
     }
     function parseArray() {
         if (ch !== '[')
