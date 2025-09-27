@@ -276,6 +276,7 @@ export function parse(source: string): any {
   }
 
   function toSafeNumber(str: string) {
+    if (str == '-0') return -0
     const maxSafeInteger = Number.MAX_SAFE_INTEGER
     const minSafeInteger = Number.MIN_SAFE_INTEGER
     const num = BigInt(str)

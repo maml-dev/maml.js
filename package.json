@@ -12,9 +12,11 @@
     "fmt": "prettier --write src",
     "fmt:check": "prettier --check src",
     "build": "tsc",
-    "test": "tsc && vitest"
+    "test": "npm run build && vitest",
+    "coverage": "npm run build && vitest run --coverage"
   },
   "devDependencies": {
+    "@vitest/coverage-v8": "^3.2.4",
     "prettier": "^3.6.2",
     "typescript": "^5.9.2",
     "vitest": "^3.2.4"
