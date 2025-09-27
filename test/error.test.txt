@@ -175,6 +175,22 @@ SyntaxError: Unexpected character "." on line 1.
     .5
     ^
 
+=== invalid digit after minus
+-a
+---
+SyntaxError: Unexpected character "a" on line 1.
+
+    -a
+    .^
+
+=== invalid digit in float
+1.a
+---
+SyntaxError: Unexpected character "a" on line 1.
+
+    1.a
+    ..^
+
 === invalid exponent (missing digits)
 1e
 ---
@@ -230,3 +246,19 @@ SyntaxError: Unexpected end of input on line 1.
 
     # comment only
     ..............^
+
+=== wrong keyword
+falze
+---
+SyntaxError: Unexpected character "z" on line 1.
+
+    falze
+    ...^
+
+=== character after a keyword
+nullnull
+---
+SyntaxError: Unexpected character "n" on line 1.
+
+    nullnull
+    ....^
