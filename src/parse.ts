@@ -3,7 +3,6 @@ export function parse(source: string): any {
 
   let pos = 0,
     lineNumber = 1,
-    buffer = '',
     ch: string,
     done = false
 
@@ -28,10 +27,6 @@ export function parse(source: string): any {
     }
     if (ch === '\n') {
       lineNumber++
-    }
-    buffer += ch
-    if (buffer.length > 100) {
-      buffer = buffer.slice(-40)
     }
   }
 
@@ -61,9 +56,7 @@ export function parse(source: string): any {
             next()
             if (!isHexDigit(ch)) {
               throw new SyntaxError(
-                errorSnippet(
-                  `Invalid Unicode escape sequence '\\u${unicode}${ch}'`,
-                ),
+                errorSnippet(`Invalid Unicode escape sequence`),
               )
             }
             unicode += ch
@@ -81,7 +74,7 @@ export function parse(source: string): any {
             t: '\t',
           }[ch]
           if (!escapedChar) {
-            throw new SyntaxError(errorSnippet())
+            throw new SyntaxError(errorSnippet(`Invalid escape sequence ${JSON.stringify(ch)}`))
           }
           str += escapedChar
         }
@@ -90,6 +83,10 @@ export function parse(source: string): any {
         escaped = true
       } else if (ch === '"') {
         break
+      } else if ((ch as string) === '\n') {
+        throw new SyntaxError(
+          errorSnippet(`Use """ for multiline strings or escape newlines with "\\n"`),
+        )
       } else if ((ch as string) < '\x1F') {
         throw new SyntaxError(
           errorSnippet(`Unescaped control character ${JSON.stringify(ch)}`),
@@ -191,7 +188,7 @@ export function parse(source: string): any {
       } else if (newlineAfterValue) {
         continue
       } else {
-        throw new SyntaxError(errorSnippet())
+        throw new SyntaxError(errorSnippet('Expected comma or newline between key-value pairs'))
       }
     }
   }
@@ -295,17 +292,23 @@ export function parse(source: string): any {
 
   function expectValue(value: unknown) {
     if (value === undefined) {
-      throw new SyntaxError(errorSnippet(`Value expected`))
+      throw new SyntaxError(errorSnippet())
     }
   }
 
-  function errorSnippet(message = `Unexpected character '${ch}'`) {
+  function errorSnippet(message = `Unexpected character ${JSON.stringify(ch)}`) {
     if (!ch) message = 'Unexpected end of input'
-    const lines = buffer.slice(-40).split('\n')
-    const lastLine = lines.pop()!
-    const source =
-      lines.map((line) => `    ${line}\n`).join('') + `    ${lastLine}\n`
-    const p = `    ${'.'.repeat(Math.max(0, lastLine.length - 1))}^\n`
-    return `${message} on line ${lineNumber}.\n\n${source}${p}`
+    const lines = source.substring(pos - 40, pos).split('\n')
+    let lastLine = lines.at(-1) || ''
+    let postfix = source.substring(pos, pos + 40).split('\n', 1).at(0) || ''
+    if (lastLine === '') { // error at "\n"
+      lastLine = lines.at(-2) || ''
+      lastLine += ' '
+      lineNumber--
+      postfix = ''
+    }
+    const snippet = `    ${lastLine}${postfix}\n`
+    const pointer = `    ${'.'.repeat(Math.max(0, lastLine.length - 1))}^\n`
+    return `${message} on line ${lineNumber}.\n\n${snippet}${pointer}`
   }
 }

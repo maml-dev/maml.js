@@ -3,9 +3,11 @@ import { loadTestCases } from './utils.js'
 import { parse } from '../src/index.js'
 
 function trim(x) {
-  x = `${x}`.trim()
-  x = x.replace(/\n\s+\n/g, '\n\n')
-  return x
+  return `${x}`
+    .split('\n')
+    .map((line) => line.trimEnd())
+    .join('\n')
+    .trim()
 }
 
 describe('error', () => {
@@ -20,4 +22,10 @@ describe('error', () => {
       }
     })
   }
+})
+
+describe('error', () => {
+  test('non-string value', () => {
+    expect(() => parse(42)).toThrow('Source must be a string')
+  })
 })

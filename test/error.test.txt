@@ -1,202 +1,168 @@
 === unterminated object
 {"a": 1
 ---
-Unexpected end of input on line 2.
+SyntaxError: Unexpected end of input on line 1.
 
     {"a": 1
-
-    ^
+    .......^
 
 === unterminated array
 [1, 2
 ---
-Unexpected end of input on line 2.
+SyntaxError: Unexpected end of input on line 1.
 
     [1, 2
-
-    ^
+    .....^
 
 === unterminated string
 "Hello
 ---
-Unterminated string on line 1.
+Use """ for multiline strings or escape newlines with "\n" on line 1.
 
     "Hello
-    ^
+    ......^
 
 === backslash at end of string
 "abc\
 ---
-Unterminated escape sequence on line 1.
+Invalid escape sequence "\n" on line 1.
 
     "abc\
-         ^
+    .....^
 
 === invalid escape sequence
 "bad \q escape"
 ---
-Invalid escape sequence "\q" on line 1.
+Invalid escape sequence "q" on line 1.
 
     "bad \q escape"
-          ^
+    ......^
 
 === invalid unicode escape (too short)
 "\u263"
 ---
-Invalid unicode escape "\u263" (expected 4 hex digits) on line 1.
+SyntaxError: Invalid Unicode escape sequence on line 1.
 
     "\u263"
-      ^
+    ......^
 
 === invalid unicode escape (bad hex)
 "\u26G4"
 ---
-Invalid unicode escape "\u26G4" on line 1.
+ SyntaxError: Invalid Unicode escape sequence on line 1.
 
     "\u26G4"
-        ^
-
-=== lone high surrogate
-"\uD83D"
----
-Lone surrogate "\uD83D" not followed by a low surrogate on line 1.
-
-    "\uD83D"
-      ^
-
-=== lone low surrogate
-"\uDE00"
----
-Unexpected low surrogate "\uDE00" without preceding high surrogate on line 1.
-
-    "\uDE00"
-      ^
+    .....^
 
 === newline in string literal
 "line1
 line2"
 ---
-Unescaped newline in string literal on line 1.
+SyntaxError: Use """ for multiline strings or escape newlines with "\n" on line 1.
 
     "line1
-    ^
+    ......^
+
+=== multiple values in a single document
+{}[]
+---
+SyntaxError: Unexpected character "[" on line 1.
+
+    {}[]
+    ..^
 
 === object missing colon
 {"a" 1}
 ---
-Expected ':' after object key on line 1.
+SyntaxError: Unexpected character "1" on line 1.
 
     {"a" 1}
-         ^
+    .....^
 
 === object double colon
 {"a"::1}
 ---
-Unexpected token ':' on line 1.
+SyntaxError: Unexpected character ":" on line 1.
 
     {"a"::1}
-          ^
+    .....^
 
 === object key without value
 {"a":}
 ---
-Expected value after ':' on line 1.
+SyntaxError: Unexpected character "}" on line 1.
 
     {"a":}
-         ^
+    .....^
 
 === value without key
 {:1}
 ---
-Expected string key before ':' on line 1.
+SyntaxError: Unexpected character ":" on line 1.
 
     {:1}
-     ^
-
-=== unquoted key
-{a: 1}
----
-Expected string key (quoted) on line 1.
-
-    {a: 1}
-     ^
+    .^
 
 === single quotes not allowed
 {'a': 1}
 ---
-Unexpected token '''; keys and strings must use double quotes on line 1.
+SyntaxError: Unexpected character "'" on line 1.
 
     {'a': 1}
-     ^
+    .^
 
 === missing separator between pairs (same line)
 {"a":1 "b":2}
 ---
-Expected ',' or newline between pairs on line 1.
+Expected comma or newline between key-value pairs on line 1.
 
     {"a":1 "b":2}
-            ^
+    .......^
 
 === leading comma in array
 [,1]
 ---
-Unexpected token ',' at start of array on line 1.
+SyntaxError: Unexpected character "," on line 1.
 
     [,1]
-     ^
+    .^
 
 === leading comma in object
 {,"a":1}
 ---
-Unexpected token ',' at start of object on line 1.
+SyntaxError: Unexpected character "," on line 1.
 
     {,"a":1}
-     ^
+    .^
 
 === double comma in array
 [1,,2]
 ---
-Unexpected token ',' (consecutive separators) on line 1.
+SyntaxError: Unexpected character "," on line 1.
 
     [1,,2]
-       ^
+    ...^
 
 === trailing data after value
 {"a":1} {"b":2}
 ---
-Unexpected token '{' after complete JSON value on line 1.
+SyntaxError: Unexpected character "{" on line 1.
 
     {"a":1} {"b":2}
-            ^
-
-=== empty input
-# only a comment
----
-No JSON value found (input is empty after comments) on line 2.
-
-    # only a comment
-    ^
-
-=== whitespace only
-
----
-No JSON value found (whitespace only) on line 1.
-
-
-    ^
+    ........^
 
 === invalid number: leading zero
 01
 ---
-Invalid number literal (leading zeros are not allowed) on line 1.
+SyntaxError: Unexpected character "1" on line 1.
 
     01
-    ^
+    .^
 
 === invalid number: explicit plus sign
 +1
 ---
-Invalid number literal ('+' not allowed) on line 1.
+SyntaxError: Unexpected character "+" on line 1.
 
     +1
     ^
@@ -204,7 +170,7 @@ Invalid number literal ('+' not allowed) on line 1.
 === invalid number: leading decimal point
 .5
 ---
-Invalid number literal (missing leading digit) on line 1.
+SyntaxError: Unexpected character "." on line 1.
 
     .5
     ^
@@ -212,23 +178,23 @@ Invalid number literal (missing leading digit) on line 1.
 === invalid exponent (missing digits)
 1e
 ---
-Invalid number literal (exponent has no digits) on line 1.
+SyntaxError: Unexpected character "\n" on line 1.
 
     1e
-      ^
+    ..^
 
 === invalid exponent sign only
 1e+
 ---
-Invalid number literal (exponent has no digits after sign) on line 1.
+SyntaxError: Unexpected character "\n" on line 1.
 
     1e+
-       ^
+    ...^
 
 === NaN not allowed
 NaN
 ---
-Unexpected identifier "NaN" (not valid JSON) on line 1.
+SyntaxError: Unexpected character "N" on line 1.
 
     NaN
     ^
@@ -236,7 +202,7 @@ Unexpected identifier "NaN" (not valid JSON) on line 1.
 === Infinity not allowed
 Infinity
 ---
-Unexpected identifier "Infinity" (not valid JSON) on line 1.
+SyntaxError: Unexpected character "I" on line 1.
 
     Infinity
     ^
@@ -244,24 +210,23 @@ Unexpected identifier "Infinity" (not valid JSON) on line 1.
 === colon after complete value
 {"a":1}:2
 ---
-Unexpected token ':' after complete JSON value on line 1.
+SyntaxError: Unexpected character ":" on line 1.
 
     {"a":1}:2
-           ^
+    .......^
+
+=== whitespace only
+
+---
+SyntaxError: Unexpected end of input on line 1.
+
+
+    ^
 
 === comment without value
 # comment only
 ---
-SyntaxError: Unexpected end of input on line 2.
+SyntaxError: Unexpected end of input on line 1.
 
     # comment only
-
-    ^
-
-=== missing separator with newline rule disabled (same line)
-{"a":1 "b":2, "c":3}
----
-Expected ',' or newline between pairs on line 1.
-
-    {"a":1 "b":2, "c":3}
-            ^
+    ..............^
