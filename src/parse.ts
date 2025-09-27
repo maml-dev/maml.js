@@ -1,11 +1,22 @@
 export function parse(source: string): any {
-  if (typeof source !== 'string') throw TypeError('source must be a string')
+  if (typeof source !== 'string') throw TypeError('Source must be a string')
 
   let pos = 0,
     lineNumber = 1,
     buffer = '',
     ch: string,
     done = false
+
+  next()
+  const value = parseValue()
+  skipWhitespace()
+
+  if (!done) {
+    throw new SyntaxError(errorSnippet())
+  }
+
+  expectValue(value)
+  return value
 
   function next() {
     if (pos < source.length) {
@@ -22,13 +33,6 @@ export function parse(source: string): any {
     if (buffer.length > 100) {
       buffer = buffer.slice(-40)
     }
-  }
-
-  next()
-  while (!done) {
-    const value = parseValue()
-    expectValue(value)
-    return value
   }
 
   function parseValue(): any {
@@ -270,11 +274,7 @@ export function parse(source: string): any {
   }
 
   function isHexDigit(ch: string) {
-    return (
-      (ch >= '0' && ch <= '9') ||
-      (ch >= 'a' && ch <= 'f') ||
-      (ch >= 'A' && ch <= 'F')
-    )
+    return (ch >= '0' && ch <= '9') || (ch >= 'A' && ch <= 'F')
   }
 
   function isDigit(ch: string) {
