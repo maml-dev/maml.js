@@ -41,7 +41,6 @@ export function parse(source: string): any {
       parseKeyword('true', true) ??
       parseKeyword('false', false) ??
       parseKeyword('null', null)
-    skipWhitespace()
     return value
   }
 

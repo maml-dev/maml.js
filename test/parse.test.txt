@@ -211,6 +211,12 @@ false
 ---
 [1, { "x": 2 }, [ 3, 4 ]]
 
+=== whitespace after object
+{}
+
+---
+{}
+
 === object with unicode and escapes mixed
 {"text":"Line1\nLine2\u263A","emoji":"\uD83D\uDE80","slash":"a\/b","quote":"\""}
 ---
