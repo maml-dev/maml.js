@@ -1,20 +1,20 @@
 export function parse(source) {
     if (typeof source !== 'string')
         throw TypeError('source must be a string');
-    let pos = 0, lineNumber = 1, buffer = '', lastChar, done = false;
+    let pos = 0, lineNumber = 1, buffer = '', ch, done = false;
     function next() {
         if (pos < source.length) {
-            lastChar = source[pos];
+            ch = source[pos];
             pos++;
         }
         else {
-            lastChar = '';
+            ch = '';
             done = true;
         }
-        if (lastChar === '\n') {
+        if (ch === '\n') {
             lineNumber++;
         }
-        buffer += lastChar;
+        buffer += ch;
         if (buffer.length > 100) {
             buffer = buffer.slice(-40);
         }
@@ -38,21 +38,21 @@ export function parse(source) {
         return value;
     }
     function parseString() {
-        if (lastChar !== '"')
+        if (ch !== '"')
             return;
         let str = '';
         let escaped = false;
         while (true) {
             next();
             if (escaped) {
-                if (lastChar === 'u') {
+                if (ch === 'u') {
                     let unicode = '';
                     for (let i = 0; i < 4; i++) {
                         next();
-                        if (!isHexDigit(lastChar)) {
-                            throw new SyntaxError(errorSnippet(`Invalid Unicode escape sequence '\\u${unicode}${lastChar}'`));
+                        if (!isHexDigit(ch)) {
+                            throw new SyntaxError(errorSnippet(`Invalid Unicode escape sequence '\\u${unicode}${ch}'`));
                         }
-                        unicode += lastChar;
+                        unicode += ch;
                     }
                     str += String.fromCharCode(parseInt(unicode, 16));
                 }
@@ -61,12 +61,12 @@ export function parse(source) {
                         '"': '"',
                         '\\': '\\',
                         '/': '/',
-                        'b': '\b',
-                        'f': '\f',
-                        'n': '\n',
-                        'r': '\r',
-                        't': '\t',
-                    }[lastChar];
+                        b: '\b',
+                        f: '\f',
+                        n: '\n',
+                        r: '\r',
+                        t: '\t',
+                    }[ch];
                     if (!escapedChar) {
                         throw new SyntaxError(errorSnippet());
                     }
@@ -74,86 +74,86 @@ export function parse(source) {
                 }
                 escaped = false;
             }
-            else if (lastChar === '\\') {
+            else if (ch === '\\') {
                 escaped = true;
             }
-            else if (lastChar === '"') {
+            else if (ch === '"') {
                 break;
             }
-            else if (lastChar < '\x1F') {
-                throw new SyntaxError(errorSnippet(`Unescaped control character ${JSON.stringify(lastChar)}`));
+            else if (ch < '\x1F') {
+                throw new SyntaxError(errorSnippet(`Unescaped control character ${JSON.stringify(ch)}`));
             }
-            else if (lastChar === undefined) {
+            else if (ch === undefined) {
                 throw new SyntaxError(errorSnippet());
             }
             else {
-                str += lastChar;
+                str += ch;
             }
         }
         next();
         return str;
     }
     function parseNumber() {
-        if (!isDigit(lastChar) && lastChar !== '-')
+        if (!isDigit(ch) && ch !== '-')
             return;
         let numStr = '';
-        if (lastChar === '-') {
-            numStr += lastChar;
+        if (ch === '-') {
+            numStr += ch;
             next();
-            if (!isDigit(lastChar)) {
+            if (!isDigit(ch)) {
                 throw new SyntaxError(errorSnippet());
             }
         }
-        if (lastChar === '0') {
-            numStr += lastChar;
+        if (ch === '0') {
+            numStr += ch;
             next();
         }
         else {
-            while (isDigit(lastChar)) {
-                numStr += lastChar;
+            while (isDigit(ch)) {
+                numStr += ch;
                 next();
             }
         }
-        if (lastChar === '.') {
-            numStr += lastChar;
+        if (ch === '.') {
+            numStr += ch;
             next();
-            if (!isDigit(lastChar)) {
+            if (!isDigit(ch)) {
                 throw new SyntaxError(errorSnippet());
             }
-            while (isDigit(lastChar)) {
-                numStr += lastChar;
+            while (isDigit(ch)) {
+                numStr += ch;
                 next();
             }
         }
-        if (lastChar === 'e' || lastChar === 'E') {
-            numStr += lastChar;
+        if (ch === 'e' || ch === 'E') {
+            numStr += ch;
             next();
-            if (lastChar === '+' || lastChar === '-') {
-                numStr += lastChar;
+            if (ch === '+' || ch === '-') {
+                numStr += ch;
                 next();
             }
-            if (!isDigit(lastChar)) {
+            if (!isDigit(ch)) {
                 throw new SyntaxError(errorSnippet());
             }
-            while (isDigit(lastChar)) {
-                numStr += lastChar;
+            while (isDigit(ch)) {
+                numStr += ch;
                 next();
             }
         }
         return isInteger(numStr) ? toSafeNumber(numStr) : parseFloat(numStr);
     }
     function parseObject() {
-        if (lastChar !== '{')
+        if (ch !== '{')
             return;
         next();
         skipWhitespace();
         const obj = {};
-        if (lastChar === '}') {
+        if (ch === '}') {
             next();
             return obj;
         }
         while (true) {
-            if (lastChar !== '"') {
+            if (ch !== '"') {
                 throw new SyntaxError(errorSnippet());
             }
             const key = parseString();
@@ -161,7 +161,7 @@ export function parse(source) {
                 throw new SyntaxError(errorSnippet());
             }
             skipWhitespace();
-            if (lastChar !== ':') {
+            if (ch !== ':') {
                 throw new SyntaxError(errorSnippet());
             }
             next();
@@ -169,14 +169,14 @@ export function parse(source) {
             expectValue(value);
             obj[key] = value;
             skipWhitespace();
-            if (lastChar === '}') {
+            if (ch === '}') {
                 next();
                 return obj;
             }
-            else if (lastChar === ',') {
+            else if (ch === ',') {
                 next();
                 skipWhitespace();
-                if (lastChar === '}') {
+                if (ch === '}') {
                     next();
                     return obj;
                 }
@@ -187,12 +187,12 @@ export function parse(source) {
         }
     }
     function parseArray() {
-        if (lastChar !== '[')
+        if (ch !== '[')
             return;
         next();
         skipWhitespace();
         const array = [];
-        if (lastChar === ']') {
+        if (ch === ']') {
             next();
             return array;
         }
@@ -201,14 +201,14 @@ export function parse(source) {
             expectValue(value);
             array.push(value);
             skipWhitespace();
-            if (lastChar === ']') {
+            if (ch === ']') {
                 next();
                 return array;
             }
-            else if (lastChar === ',') {
+            else if (ch === ',') {
                 next();
                 skipWhitespace();
-                if (lastChar === ']') {
+                if (ch === ']') {
                     next();
                     return array;
                 }
@@ -219,29 +219,33 @@ export function parse(source) {
         }
     }
     function parseKeyword(name, value) {
-        if (lastChar !== name[0])
+        if (ch !== name[0])
             return;
         for (let i = 1; i < name.length; i++) {
             next();
-            if (lastChar !== name[i]) {
+            if (ch !== name[i]) {
                 throw new SyntaxError(errorSnippet());
             }
         }
         next();
-        if (isWhitespace(lastChar) || lastChar === ',' || lastChar === '}' || lastChar === ']' || lastChar === undefined) {
+        if (isWhitespace(ch) ||
+            ch === ',' ||
+            ch === '}' ||
+            ch === ']' ||
+            ch === undefined) {
             return value;
         }
         throw new SyntaxError(errorSnippet());
     }
     function skipWhitespace() {
-        while (isWhitespace(lastChar)) {
+        while (isWhitespace(ch)) {
             next();
         }
         skipComment();
     }
     function skipComment() {
-        if (lastChar === '#') {
-            while (!done && lastChar !== '\n') {
+        if (ch === '#') {
+            while (!done && ch !== '\n') {
                 next();
             }
             skipWhitespace();
@@ -251,7 +255,9 @@ export function parse(source) {
         return ch === ' ' || ch === '\n' || ch === '\t' || ch === '\r';
     }
     function isHexDigit(ch) {
-        return (ch >= '0' && ch <= '9') || (ch >= 'a' && ch <= 'f') || (ch >= 'A' && ch <= 'F');
+        return ((ch >= '0' && ch <= '9') ||
+            (ch >= 'a' && ch <= 'f') ||
+            (ch >= 'A' && ch <= 'F'));
     }
     function isDigit(ch) {
         return ch >= '0' && ch <= '9';
@@ -272,14 +278,13 @@ export function parse(source) {
             throw new SyntaxError(errorSnippet(`JSON value expected`));
         }
     }
-    function errorSnippet(message = `Unexpected character '${lastChar}'`) {
-        if (!lastChar) {
+    function errorSnippet(message = `Unexpected character '${ch}'`) {
+        if (!ch) {
             message = 'Unexpected end of input';
         }
         const lines = buffer.slice(-40).split('\n');
         const lastLine = lines.pop();
-        const source = lines.map(line => `    ${line}\n`).join('')
-            + `    ${lastLine}\n`;
+        const source = lines.map((line) => `    ${line}\n`).join('') + `    ${lastLine}\n`;
         const p = `    ${'.'.repeat(Math.max(0, lastLine.length - 1))}^\n`;
         return `${message} on line ${lineNumber}.\n\n${source}${p}`;
     }

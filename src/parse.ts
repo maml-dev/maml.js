@@ -1,20 +1,24 @@
 export function parse(source: string): any {
   if (typeof source !== 'string') throw TypeError('source must be a string')
 
-  let pos = 0, lineNumber = 1, buffer = '', lastChar: string, done = false
+  let pos = 0,
+    lineNumber = 1,
+    buffer = '',
+    ch: string,
+    done = false
 
   function next() {
     if (pos < source.length) {
-      lastChar = source[pos]
+      ch = source[pos]
       pos++
     } else {
-      lastChar = ''
+      ch = ''
       done = true
     }
-    if (lastChar === '\n') {
+    if (ch === '\n') {
       lineNumber++
     }
-    buffer += lastChar
+    buffer += ch
     if (buffer.length > 100) {
       buffer = buffer.slice(-40)
     }
@@ -42,20 +46,24 @@ export function parse(source: string): any {
   }
 
   function parseString() {
-    if (lastChar !== '"') return
+    if (ch !== '"') return
     let str = ''
     let escaped = false
     while (true) {
       next()
       if (escaped) {
-        if (lastChar as string === 'u') {
+        if ((ch as string) === 'u') {
           let unicode = ''
           for (let i = 0; i < 4; i++) {
             next()
-            if (!isHexDigit(lastChar)) {
-              throw new SyntaxError(errorSnippet(`Invalid Unicode escape sequence '\\u${unicode}${lastChar}'`))
+            if (!isHexDigit(ch)) {
+              throw new SyntaxError(
+                errorSnippet(
+                  `Invalid Unicode escape sequence '\\u${unicode}${ch}'`,
+                ),
+              )
             }
-            unicode += lastChar
+            unicode += ch
           }
           str += String.fromCharCode(parseInt(unicode, 16))
         } else {
@@ -63,28 +71,30 @@ export function parse(source: string): any {
             '"': '"',
             '\\': '\\',
             '/': '/',
-            'b': '\b',
-            'f': '\f',
-            'n': '\n',
-            'r': '\r',
-            't': '\t',
-          }[lastChar]
+            b: '\b',
+            f: '\f',
+            n: '\n',
+            r: '\r',
+            t: '\t',
+          }[ch]
           if (!escapedChar) {
             throw new SyntaxError(errorSnippet())
           }
           str += escapedChar
         }
         escaped = false
-      } else if (lastChar as string === '\\') {
+      } else if ((ch as string) === '\\') {
         escaped = true
-      } else if (lastChar === '"') {
+      } else if (ch === '"') {
         break
-      } else if ((lastChar as string) < '\x1F') {
-        throw new SyntaxError(errorSnippet(`Unescaped control character ${JSON.stringify(lastChar)}`))
-      } else if (lastChar === undefined) {
+      } else if ((ch as string) < '\x1F') {
+        throw new SyntaxError(
+          errorSnippet(`Unescaped control character ${JSON.stringify(ch)}`),
+        )
+      } else if (ch === undefined) {
         throw new SyntaxError(errorSnippet())
       } else {
-        str += lastChar
+        str += ch
       }
     }
     next()
@@ -92,47 +102,47 @@ export function parse(source: string): any {
   }
 
   function parseNumber() {
-    if (!isDigit(lastChar) && lastChar !== '-') return
+    if (!isDigit(ch) && ch !== '-') return
     let numStr = ''
-    if (lastChar === '-') {
-      numStr += lastChar
+    if (ch === '-') {
+      numStr += ch
       next()
-      if (!isDigit(lastChar)) {
+      if (!isDigit(ch)) {
         throw new SyntaxError(errorSnippet())
       }
     }
-    if (lastChar === '0') {
-      numStr += lastChar
+    if (ch === '0') {
+      numStr += ch
       next()
     } else {
-      while (isDigit(lastChar)) {
-        numStr += lastChar
+      while (isDigit(ch)) {
+        numStr += ch
         next()
       }
     }
-    if (lastChar === '.') {
-      numStr += lastChar
+    if (ch === '.') {
+      numStr += ch
       next()
-      if (!isDigit(lastChar)) {
+      if (!isDigit(ch)) {
         throw new SyntaxError(errorSnippet())
       }
-      while (isDigit(lastChar)) {
-        numStr += lastChar
+      while (isDigit(ch)) {
+        numStr += ch
         next()
       }
     }
-    if (lastChar === 'e' || lastChar === 'E') {
-      numStr += lastChar
+    if (ch === 'e' || ch === 'E') {
+      numStr += ch
       next()
-      if (lastChar as string === '+' || lastChar as string === '-') {
-        numStr += lastChar
+      if ((ch as string) === '+' || (ch as string) === '-') {
+        numStr += ch
         next()
       }
-      if (!isDigit(lastChar)) {
+      if (!isDigit(ch)) {
         throw new SyntaxError(errorSnippet())
       }
-      while (isDigit(lastChar)) {
-        numStr += lastChar
+      while (isDigit(ch)) {
+        numStr += ch
         next()
       }
     }
@@ -140,16 +150,16 @@ export function parse(source: string): any {
   }
 
   function parseObject() {
-    if (lastChar !== '{') return
+    if (ch !== '{') return
     next()
     skipWhitespace()
     const obj: Record<string, any> = {}
-    if (lastChar as string === '}') {
+    if ((ch as string) === '}') {
       next()
       return obj
     }
     while (true) {
-      if (lastChar as string !== '"') {
+      if ((ch as string) !== '"') {
         throw new SyntaxError(errorSnippet())
       }
       const key = parseString()
@@ -157,7 +167,7 @@ export function parse(source: string): any {
         throw new SyntaxError(errorSnippet())
       }
       skipWhitespace()
-      if (lastChar as string !== ':') {
+      if ((ch as string) !== ':') {
         throw new SyntaxError(errorSnippet())
       }
       next()
@@ -165,13 +175,13 @@ export function parse(source: string): any {
       expectValue(value)
       obj[key] = value
       skipWhitespace()
-      if (lastChar as string === '}') {
+      if ((ch as string) === '}') {
         next()
         return obj
-      } else if (lastChar as string === ',') {
+      } else if ((ch as string) === ',') {
         next()
         skipWhitespace()
-        if (lastChar as string === '}') {
+        if ((ch as string) === '}') {
           next()
           return obj
         }
@@ -182,11 +192,11 @@ export function parse(source: string): any {
   }
 
   function parseArray() {
-    if (lastChar !== '[') return
+    if (ch !== '[') return
     next()
     skipWhitespace()
     const array: any[] = []
-    if (lastChar as string === ']') {
+    if ((ch as string) === ']') {
       next()
       return array
     }
@@ -195,13 +205,13 @@ export function parse(source: string): any {
       expectValue(value)
       array.push(value)
       skipWhitespace()
-      if (lastChar as string === ']') {
+      if ((ch as string) === ']') {
         next()
         return array
-      } else if (lastChar as string === ',') {
+      } else if ((ch as string) === ',') {
         next()
         skipWhitespace()
-        if (lastChar as string === ']') {
+        if ((ch as string) === ']') {
           next()
           return array
         }
@@ -212,30 +222,36 @@ export function parse(source: string): any {
   }
 
   function parseKeyword<T>(name: string, value: T) {
-    if (lastChar !== name[0]) return
+    if (ch !== name[0]) return
     for (let i = 1; i < name.length; i++) {
       next()
-      if (lastChar !== name[i]) {
+      if (ch !== name[i]) {
         throw new SyntaxError(errorSnippet())
       }
     }
     next()
-    if (isWhitespace(lastChar) || lastChar === ',' || lastChar === '}' || lastChar === ']' || lastChar === undefined) {
+    if (
+      isWhitespace(ch) ||
+      ch === ',' ||
+      ch === '}' ||
+      ch === ']' ||
+      ch === undefined
+    ) {
       return value
     }
     throw new SyntaxError(errorSnippet())
   }
 
   function skipWhitespace() {
-    while (isWhitespace(lastChar)) {
+    while (isWhitespace(ch)) {
       next()
     }
     skipComment()
   }
 
   function skipComment() {
-    if (lastChar === '#') {
-      while (!done && lastChar as string !== '\n') {
+    if (ch === '#') {
+      while (!done && (ch as string) !== '\n') {
         next()
       }
       skipWhitespace()
@@ -247,7 +263,11 @@ export function parse(source: string): any {
   }
 
   function isHexDigit(ch: string) {
-    return (ch >= '0' && ch <= '9') || (ch >= 'a' && ch <= 'f') || (ch >= 'A' && ch <= 'F')
+    return (
+      (ch >= '0' && ch <= '9') ||
+      (ch >= 'a' && ch <= 'f') ||
+      (ch >= 'A' && ch <= 'F')
+    )
   }
 
   function isDigit(ch: string) {
@@ -272,15 +292,14 @@ export function parse(source: string): any {
     }
   }
 
-  function errorSnippet(message = `Unexpected character '${lastChar}'`) {
-    if (!lastChar) {
+  function errorSnippet(message = `Unexpected character '${ch}'`) {
+    if (!ch) {
       message = 'Unexpected end of input'
     }
     const lines = buffer.slice(-40).split('\n')
     const lastLine = lines.pop()!
     const source =
-      lines.map(line => `    ${line}\n`).join('')
-      + `    ${lastLine}\n`
+      lines.map((line) => `    ${line}\n`).join('') + `    ${lastLine}\n`
     const p = `    ${'.'.repeat(Math.max(0, lastLine.length - 1))}^\n`
     return `${message} on line ${lineNumber}.\n\n${source}${p}`
   }
