@@ -270,3 +270,179 @@ SyntaxError: Unexpected character "n" on line 1.
 
     nullnull
     ....^
+
+=== identifier with dot (invalid char)
+{a.b:1}
+---
+SyntaxError: Unexpected character "." on line 1.
+
+    {a.b:1}
+    ..^
+
+=== identifier with slash (invalid char)
+{a/b:1}
+---
+SyntaxError: Unexpected character "/" on line 1.
+
+    {a/b:1}
+    ..^
+
+=== identifier with at-sign (invalid char)
+{foo@bar:1}
+---
+SyntaxError: Unexpected character "@" on line 1.
+
+    {foo@bar:1}
+    ....^
+
+=== space between identifier and value (missing colon)
+{a 1}
+---
+SyntaxError: Unexpected character "1" on line 1.
+
+    {a 1}
+    ...^
+
+=== missing separator between pairs (identifiers, same line)
+{a:1 b:2}
+---
+Expected comma or newline between key-value pairs on line 1.
+
+    {a:1 b:2}
+    .....^
+
+=== bare identifier as a top-level value (not allowed)
+foo
+---
+SyntaxError: Unexpected character "o" on line 1.
+
+    foo
+    .^
+
+=== identifier used as value (must be quoted or literal)
+{key: value}
+---
+SyntaxError: Unexpected character "v" on line 1.
+
+    {key: value}
+    ......^
+
+=== identifier as array element (not allowed as bare value)
+[foo]
+---
+SyntaxError: Unexpected character "o" on line 1.
+
+    [foo]
+    ..^
+
+=== non-ASCII letter in identifier key
+{ä:1}
+---
+SyntaxError: Unexpected character "ä" on line 1.
+
+    {ä:1}
+    .^
+
+=== leading dot before identifier
+{.a:1}
+---
+SyntaxError: Unexpected character "." on line 1.
+
+    {.a:1}
+    .^
+
+=== emoji in identifier key
+{😀:1}
+---
+SyntaxError: Unexpected character "\ud83d" on line 1.
+
+    {😀:1}
+    .^
+
+=== digit+dot in identifier key (dot invalid)
+{0.1:1}
+---
+SyntaxError: Unexpected character "." on line 1.
+
+    {0.1:1}
+    ..^
+
+=== exponent-like key with plus (plus invalid in identifier)
+{1e+2:1}
+---
+SyntaxError: Unexpected character "+" on line 1.
+
+    {1e+2:1}
+    ...^
+
+=== dollar sign in identifier
+{a$:1}
+---
+SyntaxError: Unexpected character "$" on line 1.
+
+    {a$:1}
+    ..^
+
+=== decimal point in digit-only identifier
+{1234.5: 1}
+---
+SyntaxError: Unexpected character "." on line 1.
+
+    {1234.5: 1}
+    .....^
+
+=== identifier followed by comma instead of colon
+{a,}
+---
+SyntaxError: Unexpected character "," on line 1.
+
+    {a,}
+    ..^
+
+=== identifier key without value
+{a:}
+---
+SyntaxError: Unexpected character "}" on line 1.
+
+    {a:}
+    ...^
+
+=== object in array missing separator (between elements)
+[{a:1} {b:2}]
+---
+SyntaxError: Expected comma or newline between values on line 1.
+
+    [{a:1} {b:2}]
+    .......^
+
+=== tilde in identifier (invalid char)
+{a~b:1}
+---
+SyntaxError: Unexpected character "~" on line 1.
+
+    {a~b:1}
+    ..^
+
+=== double colon after identifier key
+{a::1}
+---
+SyntaxError: Unexpected character ":" on line 1.
+
+    {a::1}
+    ...^
+
+=== backslash in identifier key
+{a\b:1}
+---
+SyntaxError: Unexpected character "\\" on line 1.
+
+    {a\b:1}
+    ..^
+
+=== array object missing colon after identifier key
+[{a 1}]
+---
+SyntaxError: Unexpected character "1" on line 1.
+
+    [{a 1}]
+    ....^
