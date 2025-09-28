@@ -51,4 +51,3 @@ function doKeyStringify(key: string) {
 function getIndent(level: number) {
   return ' '.repeat(2 * level)
 }
-
