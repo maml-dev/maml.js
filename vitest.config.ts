@@ -5,8 +5,8 @@ export default defineConfig({
     watchTriggerPatterns: [
       {
         pattern: /test\/(.+?).test.txt/,
-        testsToRun: () => {
-          return `./test/parse.test.js`
+        testsToRun: (id, match) => {
+          return `./test/${match[1]}.test.js`
         },
       },
     ],
