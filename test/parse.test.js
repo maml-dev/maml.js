@@ -53,4 +53,9 @@ describe('parse', () => {
     const output = parse(`9007199254740992`) // Number.MAX_SAFE_INTEGER + 1
     expect(output).toStrictEqual(9007199254740992n)
   })
+
+  test('maml in global', async () => {
+    await import('../build/maml.js')
+    expect('MAML' in globalThis).toBeTruthy()
+  })
 })
