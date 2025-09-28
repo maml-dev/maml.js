@@ -446,3 +446,20 @@ SyntaxError: Unexpected character "1" on line 1.
 
     [{a 1}]
     ....^
+
+=== multiline string without closing
+"""
+foo
+---
+SyntaxError: Unexpected end of input on line 2.
+
+    foo
+    ...^
+
+=== empty multiline single-line
+""""""
+---
+SyntaxError: Multiline strings cannot be empty on line 1.
+
+    """"""
+    ......^

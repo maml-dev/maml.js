@@ -30,9 +30,14 @@ export function parse(source: string): any {
     }
   }
 
+  function lookahead2() {
+    return source.substring(pos, pos + 2)
+  }
+
   function parseValue(): any {
     skipWhitespace()
-    const value =
+    return (
+      parseMultilineString() ??
       parseString() ??
       parseNumber() ??
       parseObject() ??
@@ -40,7 +45,7 @@ export function parse(source: string): any {
       parseKeyword('true', true) ??
       parseKeyword('false', false) ??
       parseKeyword('null', null)
-    return value
+    )
   }
 
   function parseString() {
@@ -74,7 +79,9 @@ export function parse(source: string): any {
             t: '\t',
           }[ch]
           if (!escapedChar) {
-            throw new SyntaxError(errorSnippet(`Invalid escape sequence ${JSON.stringify(ch)}`))
+            throw new SyntaxError(
+              errorSnippet(`Invalid escape sequence ${JSON.stringify(ch)}`),
+            )
           }
           str += escapedChar
         }
@@ -85,7 +92,9 @@ export function parse(source: string): any {
         break
       } else if ((ch as string) === '\n') {
         throw new SyntaxError(
-          errorSnippet(`Use """ for multiline strings or escape newlines with "\\n"`),
+          errorSnippet(
+            `Use """ for multiline strings or escape newlines with "\\n"`,
+          ),
         )
       } else if ((ch as string) < '\x1F') {
         throw new SyntaxError(
@@ -97,6 +106,37 @@ export function parse(source: string): any {
     }
     next()
     return str
+  }
+
+  function parseMultilineString() {
+    if (ch !== '"' || lookahead2() !== '""') return
+    next()
+    next()
+
+    next()
+    let hasLeadingNewline = false
+    if ((ch as string) === '\n') {
+      hasLeadingNewline = true
+      next()
+    }
+
+    let str = ''
+    while (!done) {
+      if (ch === '"' && lookahead2() === '""') {
+        next()
+        next()
+        next()
+        if (str === '' && !hasLeadingNewline) {
+          throw new SyntaxError(
+            errorSnippet('Multiline strings cannot be empty'),
+          )
+        }
+        return str
+      }
+      str += ch
+      next()
+    }
+    throw new SyntaxError(errorSnippet())
   }
 
   function parseNumber() {
@@ -186,11 +226,12 @@ export function parse(source: string): any {
       } else if (newlineAfterValue) {
         continue
       } else {
-        throw new SyntaxError(errorSnippet('Expected comma or newline between key-value pairs'))
+        throw new SyntaxError(
+          errorSnippet('Expected comma or newline between key-value pairs'),
+        )
       }
     }
   }
-
 
   function parseKey() {
     let identifier = ''
@@ -231,7 +272,9 @@ export function parse(source: string): any {
       } else if (newLineAfterValue) {
         continue
       } else {
-        throw new SyntaxError(errorSnippet('Expected comma or newline between values'))
+        throw new SyntaxError(
+          errorSnippet('Expected comma or newline between values'),
+        )
       }
     }
   }
@@ -307,12 +350,19 @@ export function parse(source: string): any {
     }
   }
 
-  function errorSnippet(message = `Unexpected character ${JSON.stringify(ch)}`) {
+  function errorSnippet(
+    message = `Unexpected character ${JSON.stringify(ch)}`,
+  ) {
     if (!ch) message = 'Unexpected end of input'
     const lines = source.substring(pos - 40, pos).split('\n')
     let lastLine = lines.at(-1) || ''
-    let postfix = source.substring(pos, pos + 40).split('\n', 1).at(0) || ''
-    if (lastLine === '') { // error at "\n"
+    let postfix =
+      source
+        .substring(pos, pos + 40)
+        .split('\n', 1)
+        .at(0) || ''
+    if (lastLine === '') {
+      // error at "\n"
       lastLine = lines.at(-2) || ''
       lastLine += ' '
       lineNumber--

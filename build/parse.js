@@ -23,16 +23,19 @@ export function parse(source) {
             lineNumber++;
         }
     }
+    function lookahead2() {
+        return source.substring(pos, pos + 2);
+    }
     function parseValue() {
         skipWhitespace();
-        const value = parseString() ??
+        return (parseMultilineString() ??
+            parseString() ??
             parseNumber() ??
             parseObject() ??
             parseArray() ??
             parseKeyword('true', true) ??
             parseKeyword('false', false) ??
-            parseKeyword('null', null);
-        return value;
+            parseKeyword('null', null));
     }
     function parseString() {
         if (ch !== '"')
@@ -89,6 +92,33 @@ export function parse(source) {
         }
         next();
         return str;
+    }
+    function parseMultilineString() {
+        if (ch !== '"' || lookahead2() !== '""')
+            return;
+        next();
+        next();
+        next();
+        let hasLeadingNewline = false;
+        if (ch === '\n') {
+            hasLeadingNewline = true;
+            next();
+        }
+        let str = '';
+        while (!done) {
+            if (ch === '"' && lookahead2() === '""') {
+                next();
+                next();
+                next();
+                if (str === '' && !hasLeadingNewline) {
+                    throw new SyntaxError(errorSnippet('Multiline strings cannot be empty'));
+                }
+                return str;
+            }
+            str += ch;
+            next();
+        }
+        throw new SyntaxError(errorSnippet());
     }
     function parseNumber() {
         if (!isDigit(ch) && ch !== '-')
@@ -299,8 +329,12 @@ export function parse(source) {
             message = 'Unexpected end of input';
         const lines = source.substring(pos - 40, pos).split('\n');
         let lastLine = lines.at(-1) || '';
-        let postfix = source.substring(pos, pos + 40).split('\n', 1).at(0) || '';
-        if (lastLine === '') { // error at "\n"
+        let postfix = source
+            .substring(pos, pos + 40)
+            .split('\n', 1)
+            .at(0) || '';
+        if (lastLine === '') {
+            // error at "\n"
             lastLine = lines.at(-2) || '';
             lastLine += ' ';
             lineNumber--;
