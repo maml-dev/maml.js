@@ -14,8 +14,8 @@ function loadTestCases(file) {
     .map((testCase) => {
       const [name, ...lines] = testCase.split('\n')
       const body = lines.join('\n')
-      const [maml, json] = body.split('---')
-      return { name: name.trim(), maml, json }
+      const [input, expected] = body.split('---')
+      return { name: name.trim(), input, expected }
     })
 }
 
@@ -68,11 +68,9 @@ Keeps formatting as-is.
 
 describe('parse', () => {
   const testCases = loadTestCases('parse.test.txt')
-  for (const { name, maml, json } of testCases) {
+  for (const { name, input, expected } of testCases) {
     test(name, () => {
-      const output = parse(maml)
-      const expected = JSON.parse(json)
-      expect(output).toStrictEqual(expected)
+      expect(parse(input)).toStrictEqual(JSON.parse(expected))
     })
   }
 
@@ -84,12 +82,12 @@ describe('parse', () => {
 
 describe('error', () => {
   const testCases = loadTestCases('error.test.txt')
-  for (const { name, maml, json } of testCases) {
-    const expectedError = trim(json)
+  for (const { name, input, expected } of testCases) {
+    const expectedError = trim(expected)
     test(name, () => {
       expect.assertions(1)
       try {
-        parse(maml)
+        parse(input)
       } catch (error) {
         expect(trim(error)).toContain(expectedError)
         if (expectedError.length < 10) expect.fail(`expected error is too short ${JSON.stringify(expectedError)}.\n\n${error}`)
