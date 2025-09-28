@@ -1,5 +1,5 @@
 import { test, describe, expect } from 'vitest'
-import { stringify } from '../src/index.js'
+import { stringify } from '../build/index.js'
 
 describe('stringify', () => {
   test('int', () => {
@@ -52,5 +52,26 @@ describe('stringify', () => {
   foo: "foo"
   bar: "bar"
 }`)
+  })
+
+  test('object with quoted keys', () => {
+    const output = stringify({ 'foo bar': 'value' })
+    expect(output).toStrictEqual(`{
+  "foo bar": "value"
+}`)
+  })
+
+  test('empty object', () => {
+    const output = stringify({})
+    expect(output).toStrictEqual(`{}`)
+  })
+
+  test('empty array', () => {
+    const output = stringify([])
+    expect(output).toStrictEqual(`[]`)
+  })
+
+  test('unsupported value', () => {
+    expect(() => stringify(Symbol('x'))).toThrow()
   })
 })
