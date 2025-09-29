@@ -1,3 +1,13 @@
+const ESCAPE_MAP = {
+    '"': '"',
+    '\\': '\\',
+    '/': '/',
+    b: '\b',
+    f: '\f',
+    n: '\n',
+    r: '\r',
+    t: '\t',
+};
 export function parse(source) {
     if (typeof source !== 'string')
         throw TypeError('Source must be a string');
@@ -57,16 +67,7 @@ export function parse(source) {
                     str += String.fromCharCode(parseInt(unicode, 16));
                 }
                 else {
-                    const escapedChar = {
-                        '"': '"',
-                        '\\': '\\',
-                        '/': '/',
-                        b: '\b',
-                        f: '\f',
-                        n: '\n',
-                        r: '\r',
-                        t: '\t',
-                    }[ch];
+                    const escapedChar = ESCAPE_MAP[ch];
                     if (!escapedChar) {
                         throw new SyntaxError(errorSnippet(`Invalid escape sequence ${JSON.stringify(ch)}`));
                     }
@@ -124,6 +125,7 @@ export function parse(source) {
         if (!isDigit(ch) && ch !== '-')
             return;
         let numStr = '';
+        let float = false;
         if (ch === '-') {
             numStr += ch;
             next();
@@ -142,6 +144,7 @@ export function parse(source) {
             }
         }
         if (ch === '.') {
+            float = true;
             numStr += ch;
             next();
             if (!isDigit(ch)) {
@@ -153,6 +156,7 @@ export function parse(source) {
             }
         }
         if (ch === 'e' || ch === 'E') {
+            float = true;
             numStr += ch;
             next();
             if (ch === '+' || ch === '-') {
@@ -167,7 +171,7 @@ export function parse(source) {
                 next();
             }
         }
-        return isInteger(numStr) ? toSafeNumber(numStr) : parseFloat(numStr);
+        return float ? parseFloat(numStr) : toSafeNumber(numStr);
     }
     function parseObject() {
         if (ch !== '{')
@@ -218,7 +222,7 @@ export function parse(source) {
     }
     function parseKey() {
         let identifier = '';
-        while (/[A-Za-z0-9_-]/.test(ch)) {
+        while (isKeyChar(ch)) {
             identifier += ch;
             next();
         }
@@ -308,8 +312,8 @@ export function parse(source) {
     function isDigit(ch) {
         return ch >= '0' && ch <= '9';
     }
-    function isInteger(value) {
-        return /^-?[0-9]+$/.test(value);
+    function isKeyChar(ch) {
+        return (ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z') || (ch >= '0' && ch <= '9') || ch === '_' || ch === '-';
     }
     function toSafeNumber(str) {
         if (str == '-0')
