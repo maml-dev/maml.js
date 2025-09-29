@@ -42,7 +42,7 @@ Keeps formatting as-is.
 }
   `
 
-const json = {
+const obj = {
   "project": "MAML",
   "tags": [
     "minimal",
@@ -69,15 +69,15 @@ const json = {
   "notes": "This is a multiline strings.\nKeeps formatting as-is.\n"
 }
 
-const yaml = YAML.stringify(json)
-const toml = TOML2.stringify(json)
-const ini = INI.stringify(json)
+const yaml = YAML.stringify(obj)
+const toml = TOML2.stringify(obj)
+const ini = INI.stringify(obj)
 
 describe('stringify', () => {
-  bench('MAML', () => stringify(json))
-  bench('YAML', () => YAML.stringify(json))
-  bench('INI', () => INI.stringify(json))
-  bench('TOML2', () => TOML2.stringify(json))
+  bench('MAML', () => stringify(obj))
+  bench('YAML', () => YAML.stringify(obj))
+  bench('INI', () => INI.stringify(obj))
+  bench('TOML2', () => TOML2.stringify(obj))
 })
 
 describe('parse', () => {
