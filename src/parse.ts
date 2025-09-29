@@ -207,7 +207,9 @@ export function parse(source: string): any {
       } else {
         key = parseKey()
       }
-
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        throw new SyntaxError(errorSnippet(`Duplicate key ${JSON.stringify(key)}`))
+      }
       skipWhitespace()
       if ((ch as string) !== ':') {
         throw new SyntaxError(errorSnippet())

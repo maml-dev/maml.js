@@ -1,7 +1,7 @@
 === unterminated object
 {"a": 1
 ---
-SyntaxError: Unexpected end of input on line 1.
+Unexpected end of input on line 1.
 
     {"a": 1
     .......^
@@ -9,7 +9,7 @@ SyntaxError: Unexpected end of input on line 1.
 === unterminated array
 [1, 2
 ---
-SyntaxError: Unexpected end of input on line 1.
+Unexpected end of input on line 1.
 
     [1, 2
     .....^
@@ -41,7 +41,7 @@ Invalid escape sequence "q" on line 1.
 === invalid unicode escape (too short)
 "\u263"
 ---
-SyntaxError: Invalid Unicode escape sequence on line 1.
+Invalid Unicode escape sequence on line 1.
 
     "\u263"
     ......^
@@ -49,7 +49,7 @@ SyntaxError: Invalid Unicode escape sequence on line 1.
 === invalid unicode escape (bad hex)
 "\u26G4"
 ---
- SyntaxError: Invalid Unicode escape sequence on line 1.
+ Invalid Unicode escape sequence on line 1.
 
     "\u26G4"
     .....^
@@ -58,7 +58,7 @@ SyntaxError: Invalid Unicode escape sequence on line 1.
 "line1
 line2"
 ---
-SyntaxError: Use """ for multiline strings or escape newlines with "\n" on line 1.
+Use """ for multiline strings or escape newlines with "\n" on line 1.
 
     "line1
     ......^
@@ -66,7 +66,7 @@ SyntaxError: Use """ for multiline strings or escape newlines with "\n" on line 
 === multiple values in a single document
 {}[]
 ---
-SyntaxError: Unexpected character "[" on line 1.
+Unexpected character "[" on line 1.
 
     {}[]
     ..^
@@ -74,7 +74,7 @@ SyntaxError: Unexpected character "[" on line 1.
 === object missing colon
 {"a" 1}
 ---
-SyntaxError: Unexpected character "1" on line 1.
+Unexpected character "1" on line 1.
 
     {"a" 1}
     .....^
@@ -82,7 +82,7 @@ SyntaxError: Unexpected character "1" on line 1.
 === object double colon
 {"a"::1}
 ---
-SyntaxError: Unexpected character ":" on line 1.
+Unexpected character ":" on line 1.
 
     {"a"::1}
     .....^
@@ -90,7 +90,7 @@ SyntaxError: Unexpected character ":" on line 1.
 === object key without value
 {"a":}
 ---
-SyntaxError: Unexpected character "}" on line 1.
+Unexpected character "}" on line 1.
 
     {"a":}
     .....^
@@ -98,7 +98,7 @@ SyntaxError: Unexpected character "}" on line 1.
 === value without key
 {:1}
 ---
-SyntaxError: Unexpected character ":" on line 1.
+Unexpected character ":" on line 1.
 
     {:1}
     .^
@@ -106,7 +106,7 @@ SyntaxError: Unexpected character ":" on line 1.
 === single quotes not allowed
 {'a': 1}
 ---
-SyntaxError: Unexpected character "'" on line 1.
+Unexpected character "'" on line 1.
 
     {'a': 1}
     .^
@@ -122,7 +122,7 @@ Expected comma or newline between key-value pairs on line 1.
 === leading comma in array
 [,1]
 ---
-SyntaxError: Unexpected character "," on line 1.
+Unexpected character "," on line 1.
 
     [,1]
     .^
@@ -130,7 +130,7 @@ SyntaxError: Unexpected character "," on line 1.
 === leading comma in object
 {,"a":1}
 ---
-SyntaxError: Unexpected character "," on line 1.
+Unexpected character "," on line 1.
 
     {,"a":1}
     .^
@@ -138,7 +138,7 @@ SyntaxError: Unexpected character "," on line 1.
 === double comma in array
 [1,,2]
 ---
-SyntaxError: Unexpected character "," on line 1.
+Unexpected character "," on line 1.
 
     [1,,2]
     ...^
@@ -146,7 +146,7 @@ SyntaxError: Unexpected character "," on line 1.
 === missing separator in array
 [1 2]
 ---
-SyntaxError: Expected comma or newline between values on line 1.
+Expected comma or newline between values on line 1.
 
     [1 2]
     ...^
@@ -154,7 +154,7 @@ SyntaxError: Expected comma or newline between values on line 1.
 === trailing data after value
 {"a":1} {"b":2}
 ---
-SyntaxError: Unexpected character "{" on line 1.
+Unexpected character "{" on line 1.
 
     {"a":1} {"b":2}
     ........^
@@ -162,7 +162,7 @@ SyntaxError: Unexpected character "{" on line 1.
 === invalid number: leading zero
 01
 ---
-SyntaxError: Unexpected character "1" on line 1.
+Unexpected character "1" on line 1.
 
     01
     .^
@@ -170,7 +170,7 @@ SyntaxError: Unexpected character "1" on line 1.
 === invalid number: explicit plus sign
 +1
 ---
-SyntaxError: Unexpected character "+" on line 1.
+Unexpected character "+" on line 1.
 
     +1
     ^
@@ -178,7 +178,7 @@ SyntaxError: Unexpected character "+" on line 1.
 === invalid number: leading decimal point
 .5
 ---
-SyntaxError: Unexpected character "." on line 1.
+Unexpected character "." on line 1.
 
     .5
     ^
@@ -186,7 +186,7 @@ SyntaxError: Unexpected character "." on line 1.
 === invalid digit after minus
 -a
 ---
-SyntaxError: Unexpected character "a" on line 1.
+Unexpected character "a" on line 1.
 
     -a
     .^
@@ -194,7 +194,7 @@ SyntaxError: Unexpected character "a" on line 1.
 === invalid digit in float
 1.a
 ---
-SyntaxError: Unexpected character "a" on line 1.
+Unexpected character "a" on line 1.
 
     1.a
     ..^
@@ -202,7 +202,7 @@ SyntaxError: Unexpected character "a" on line 1.
 === invalid exponent (missing digits)
 1e
 ---
-SyntaxError: Unexpected character "\n" on line 1.
+Unexpected character "\n" on line 1.
 
     1e
     ..^
@@ -210,7 +210,7 @@ SyntaxError: Unexpected character "\n" on line 1.
 === invalid exponent sign only
 1e+
 ---
-SyntaxError: Unexpected character "\n" on line 1.
+Unexpected character "\n" on line 1.
 
     1e+
     ...^
@@ -218,7 +218,7 @@ SyntaxError: Unexpected character "\n" on line 1.
 === NaN not allowed
 NaN
 ---
-SyntaxError: Unexpected character "N" on line 1.
+Unexpected character "N" on line 1.
 
     NaN
     ^
@@ -226,7 +226,7 @@ SyntaxError: Unexpected character "N" on line 1.
 === Infinity not allowed
 Infinity
 ---
-SyntaxError: Unexpected character "I" on line 1.
+Unexpected character "I" on line 1.
 
     Infinity
     ^
@@ -234,7 +234,7 @@ SyntaxError: Unexpected character "I" on line 1.
 === colon after complete value
 {"a":1}:2
 ---
-SyntaxError: Unexpected character ":" on line 1.
+Unexpected character ":" on line 1.
 
     {"a":1}:2
     .......^
@@ -242,7 +242,7 @@ SyntaxError: Unexpected character ":" on line 1.
 === whitespace only
 
 ---
-SyntaxError: Unexpected end of input on line 1.
+Unexpected end of input on line 1.
 
 
     ^
@@ -250,7 +250,7 @@ SyntaxError: Unexpected end of input on line 1.
 === comment without value
 # comment only
 ---
-SyntaxError: Unexpected end of input on line 1.
+Unexpected end of input on line 1.
 
     # comment only
     ..............^
@@ -258,7 +258,7 @@ SyntaxError: Unexpected end of input on line 1.
 === wrong keyword
 falze
 ---
-SyntaxError: Unexpected character "z" on line 1.
+Unexpected character "z" on line 1.
 
     falze
     ...^
@@ -266,7 +266,7 @@ SyntaxError: Unexpected character "z" on line 1.
 === character after a keyword
 nullnull
 ---
-SyntaxError: Unexpected character "n" on line 1.
+Unexpected character "n" on line 1.
 
     nullnull
     ....^
@@ -274,7 +274,7 @@ SyntaxError: Unexpected character "n" on line 1.
 === identifier with dot (invalid char)
 {a.b:1}
 ---
-SyntaxError: Unexpected character "." on line 1.
+Unexpected character "." on line 1.
 
     {a.b:1}
     ..^
@@ -282,7 +282,7 @@ SyntaxError: Unexpected character "." on line 1.
 === identifier with slash (invalid char)
 {a/b:1}
 ---
-SyntaxError: Unexpected character "/" on line 1.
+Unexpected character "/" on line 1.
 
     {a/b:1}
     ..^
@@ -290,7 +290,7 @@ SyntaxError: Unexpected character "/" on line 1.
 === identifier with at-sign (invalid char)
 {foo@bar:1}
 ---
-SyntaxError: Unexpected character "@" on line 1.
+Unexpected character "@" on line 1.
 
     {foo@bar:1}
     ....^
@@ -298,7 +298,7 @@ SyntaxError: Unexpected character "@" on line 1.
 === space between identifier and value (missing colon)
 {a 1}
 ---
-SyntaxError: Unexpected character "1" on line 1.
+Unexpected character "1" on line 1.
 
     {a 1}
     ...^
@@ -314,7 +314,7 @@ Expected comma or newline between key-value pairs on line 1.
 === bare identifier as a top-level value (not allowed)
 foo
 ---
-SyntaxError: Unexpected character "o" on line 1.
+Unexpected character "o" on line 1.
 
     foo
     .^
@@ -322,7 +322,7 @@ SyntaxError: Unexpected character "o" on line 1.
 === identifier used as value (must be quoted or literal)
 {key: value}
 ---
-SyntaxError: Unexpected character "v" on line 1.
+Unexpected character "v" on line 1.
 
     {key: value}
     ......^
@@ -330,7 +330,7 @@ SyntaxError: Unexpected character "v" on line 1.
 === identifier as array element (not allowed as bare value)
 [foo]
 ---
-SyntaxError: Unexpected character "o" on line 1.
+Unexpected character "o" on line 1.
 
     [foo]
     ..^
@@ -338,7 +338,7 @@ SyntaxError: Unexpected character "o" on line 1.
 === non-ASCII letter in identifier key
 {ä:1}
 ---
-SyntaxError: Unexpected character "ä" on line 1.
+Unexpected character "ä" on line 1.
 
     {ä:1}
     .^
@@ -346,7 +346,7 @@ SyntaxError: Unexpected character "ä" on line 1.
 === leading dot before identifier
 {.a:1}
 ---
-SyntaxError: Unexpected character "." on line 1.
+Unexpected character "." on line 1.
 
     {.a:1}
     .^
@@ -354,7 +354,7 @@ SyntaxError: Unexpected character "." on line 1.
 === emoji in identifier key
 {😀:1}
 ---
-SyntaxError: Unexpected character "\ud83d" on line 1.
+Unexpected character "\ud83d" on line 1.
 
     {😀:1}
     .^
@@ -362,7 +362,7 @@ SyntaxError: Unexpected character "\ud83d" on line 1.
 === digit+dot in identifier key (dot invalid)
 {0.1:1}
 ---
-SyntaxError: Unexpected character "." on line 1.
+Unexpected character "." on line 1.
 
     {0.1:1}
     ..^
@@ -370,7 +370,7 @@ SyntaxError: Unexpected character "." on line 1.
 === exponent-like key with plus (plus invalid in identifier)
 {1e+2:1}
 ---
-SyntaxError: Unexpected character "+" on line 1.
+Unexpected character "+" on line 1.
 
     {1e+2:1}
     ...^
@@ -378,7 +378,7 @@ SyntaxError: Unexpected character "+" on line 1.
 === dollar sign in identifier
 {a$:1}
 ---
-SyntaxError: Unexpected character "$" on line 1.
+Unexpected character "$" on line 1.
 
     {a$:1}
     ..^
@@ -386,7 +386,7 @@ SyntaxError: Unexpected character "$" on line 1.
 === decimal point in digit-only identifier
 {1234.5: 1}
 ---
-SyntaxError: Unexpected character "." on line 1.
+Unexpected character "." on line 1.
 
     {1234.5: 1}
     .....^
@@ -394,7 +394,7 @@ SyntaxError: Unexpected character "." on line 1.
 === identifier followed by comma instead of colon
 {a,}
 ---
-SyntaxError: Unexpected character "," on line 1.
+Unexpected character "," on line 1.
 
     {a,}
     ..^
@@ -402,7 +402,7 @@ SyntaxError: Unexpected character "," on line 1.
 === identifier key without value
 {a:}
 ---
-SyntaxError: Unexpected character "}" on line 1.
+Unexpected character "}" on line 1.
 
     {a:}
     ...^
@@ -410,7 +410,7 @@ SyntaxError: Unexpected character "}" on line 1.
 === object in array missing separator (between elements)
 [{a:1} {b:2}]
 ---
-SyntaxError: Expected comma or newline between values on line 1.
+Expected comma or newline between values on line 1.
 
     [{a:1} {b:2}]
     .......^
@@ -418,7 +418,7 @@ SyntaxError: Expected comma or newline between values on line 1.
 === tilde in identifier (invalid char)
 {a~b:1}
 ---
-SyntaxError: Unexpected character "~" on line 1.
+Unexpected character "~" on line 1.
 
     {a~b:1}
     ..^
@@ -426,7 +426,7 @@ SyntaxError: Unexpected character "~" on line 1.
 === double colon after identifier key
 {a::1}
 ---
-SyntaxError: Unexpected character ":" on line 1.
+Unexpected character ":" on line 1.
 
     {a::1}
     ...^
@@ -434,7 +434,7 @@ SyntaxError: Unexpected character ":" on line 1.
 === backslash in identifier key
 {a\b:1}
 ---
-SyntaxError: Unexpected character "\\" on line 1.
+Unexpected character "\\" on line 1.
 
     {a\b:1}
     ..^
@@ -442,7 +442,7 @@ SyntaxError: Unexpected character "\\" on line 1.
 === array object missing colon after identifier key
 [{a 1}]
 ---
-SyntaxError: Unexpected character "1" on line 1.
+Unexpected character "1" on line 1.
 
     [{a 1}]
     ....^
@@ -451,7 +451,7 @@ SyntaxError: Unexpected character "1" on line 1.
 """
 foo
 ---
-SyntaxError: Unexpected end of input on line 2.
+Unexpected end of input on line 2.
 
     foo
     ...^
@@ -459,7 +459,18 @@ SyntaxError: Unexpected end of input on line 2.
 === empty multiline single-line
 """"""
 ---
-SyntaxError: Multiline strings cannot be empty on line 1.
+Multiline strings cannot be empty on line 1.
 
     """"""
     ......^
+
+=== duplicate keys
+{
+  foo: 1
+  foo: 2
+}
+---
+Duplicate key "foo" on line 3.
+
+      foo: 2
+    .....^

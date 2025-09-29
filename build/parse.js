@@ -191,6 +191,9 @@ export function parse(source) {
             else {
                 key = parseKey();
             }
+            if (Object.prototype.hasOwnProperty.call(obj, key)) {
+                throw new SyntaxError(errorSnippet(`Duplicate key ${JSON.stringify(key)}`));
+            }
             skipWhitespace();
             if (ch !== ':') {
                 throw new SyntaxError(errorSnippet());

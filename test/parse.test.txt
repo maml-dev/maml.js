@@ -880,3 +880,11 @@ Violets are blue.
 }
 ---
 {"poem":"Roses are red,\nViolets are blue.\n"}
+
+=== object with special keys
+{
+  toString: 1
+  length: 2
+}
+---
+{"toString": 1, "length": 2}
