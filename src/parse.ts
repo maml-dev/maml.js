@@ -210,7 +210,9 @@ export function parse(source: string): any {
       }
       if (Object.prototype.hasOwnProperty.call(obj, key)) {
         pos = keyPos
-        throw new SyntaxError(errorSnippet(`Duplicate key ${JSON.stringify(key)}`))
+        throw new SyntaxError(
+          errorSnippet(`Duplicate key ${JSON.stringify(key)}`),
+        )
       }
       skipWhitespace()
       if ((ch as string) !== ':') {
