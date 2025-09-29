@@ -6,7 +6,8 @@ A tiny, modern, well‑tested implementation of the [MAML](https://maml.dev) dat
 - Zero dependencies, ESM first
 - 100% test coverage (statements, branches, lines) verified with Vitest + v8
 - Works in Node.js, Deno, Bun, and the browser
-- 14x times faster than YAML!
+- 14x times faster than YAML
+- Only 1.79 kB gzipped
 
 ## Installation
 
