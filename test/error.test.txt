@@ -473,4 +473,15 @@ Multiline strings cannot be empty on line 1.
 Duplicate key "foo" on line 3.
 
       foo: 2
-    .....^
+    ..^
+
+=== duplicate keys
+{
+  foo: 1
+  "foo": 2
+}
+---
+Duplicate key "foo" on line 3.
+
+      "foo": 2
+    ..^

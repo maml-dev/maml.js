@@ -201,6 +201,7 @@ export function parse(source: string): any {
       return obj
     }
     while (true) {
+      const keyPos = pos
       let key: string
       if ((ch as string) === '"') {
         key = parseString()!
@@ -208,6 +209,7 @@ export function parse(source: string): any {
         key = parseKey()
       }
       if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        pos = keyPos
         throw new SyntaxError(errorSnippet(`Duplicate key ${JSON.stringify(key)}`))
       }
       skipWhitespace()
