@@ -4,9 +4,7 @@ export function stringify(value: any): string {
 
 function doStringify(value: any, level: number): string {
   const kind =
-    value === null ? 'null' :
-      Array.isArray(value) ? 'array' :
-        typeof value
+    value === null ? 'null' : Array.isArray(value) ? 'array' : typeof value
 
   switch (kind) {
     case 'string':
@@ -46,7 +44,11 @@ function doStringify(value: any, level: number): string {
       for (let i = 0; i < len; i++) {
         if (i > 0) out += '\n'
         const key = keys[i]
-        out += childIndent + doKeyStringify(key) + ': ' + doStringify(value[key], level + 1)
+        out +=
+          childIndent +
+          doKeyStringify(key) +
+          ': ' +
+          doStringify(value[key], level + 1)
       }
       return out + '\n' + parentIndent + '}'
     }
@@ -58,9 +60,7 @@ function doStringify(value: any, level: number): string {
 
 const KEY_RE = /^[A-Za-z0-9_-]+$/
 function doKeyStringify(key: string) {
-  return KEY_RE.test(key)
-    ? key
-    : JSON.stringify(key)
+  return KEY_RE.test(key) ? key : JSON.stringify(key)
 }
 
 function getIndent(level: number) {

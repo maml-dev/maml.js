@@ -176,7 +176,7 @@ export function parse(source: string): any {
       float = true
       numStr += ch
       next()
-      if ((ch as string)  === '+' || (ch as string) === '-') {
+      if ((ch as string) === '+' || (ch as string) === '-') {
         numStr += ch
         next()
       }
@@ -337,7 +337,13 @@ export function parse(source: string): any {
   }
 
   function isKeyChar(ch: string) {
-    return (ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z') || (ch >= '0' && ch <= '9') || ch === '_' || ch === '-'
+    return (
+      (ch >= 'A' && ch <= 'Z') ||
+      (ch >= 'a' && ch <= 'z') ||
+      (ch >= '0' && ch <= '9') ||
+      ch === '_' ||
+      ch === '-'
+    )
   }
 
   function toSafeNumber(str: string) {

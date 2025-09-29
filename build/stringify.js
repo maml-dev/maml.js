@@ -2,9 +2,7 @@ export function stringify(value) {
     return doStringify(value, 0);
 }
 function doStringify(value, level) {
-    const kind = value === null ? 'null' :
-        Array.isArray(value) ? 'array' :
-            typeof value;
+    const kind = value === null ? 'null' : Array.isArray(value) ? 'array' : typeof value;
     switch (kind) {
         case 'string':
             return JSON.stringify(value);
@@ -41,7 +39,11 @@ function doStringify(value, level) {
                 if (i > 0)
                     out += '\n';
                 const key = keys[i];
-                out += childIndent + doKeyStringify(key) + ': ' + doStringify(value[key], level + 1);
+                out +=
+                    childIndent +
+                        doKeyStringify(key) +
+                        ': ' +
+                        doStringify(value[key], level + 1);
             }
             return out + '\n' + parentIndent + '}';
         }
@@ -51,9 +53,7 @@ function doStringify(value, level) {
 }
 const KEY_RE = /^[A-Za-z0-9_-]+$/;
 function doKeyStringify(key) {
-    return KEY_RE.test(key)
-        ? key
-        : JSON.stringify(key);
+    return KEY_RE.test(key) ? key : JSON.stringify(key);
 }
 function getIndent(level) {
     return ' '.repeat(2 * level);
