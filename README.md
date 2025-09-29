@@ -6,10 +6,7 @@ A tiny, modern, well‑tested implementation of the [MAML](https://maml.dev) dat
 - Zero dependencies, ESM first
 - 100% test coverage (statements, branches, lines) verified with Vitest + v8
 - Works in Node.js, Deno, Bun, and the browser
-
-> [!NOTE]
-> MAML in one sentence: Minimal, readable structured data with comments, trailing‑comma freedom, and beautiful
-> multi‑line strings.
+- 14x times faster than YAML!
 
 ## Installation
 
