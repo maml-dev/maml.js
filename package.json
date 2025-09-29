@@ -8,12 +8,17 @@
   "files": [
     "build"
   ],
+  "engines": {
+    "node": ">=12"
+  },
   "scripts": {
     "fmt": "prettier --write src",
     "fmt:check": "prettier --check src",
-    "build": "npm run build:tsc && npm run build:esbuild",
-    "build:tsc": "tsc",
-    "build:esbuild": "esbuild build/maml.js --bundle --outfile=maml.min.js --platform=neutral --target=node20 --minify-whitespace --minify-identifiers --minify-syntax",
+    "build": "npm run build:tsc && npm run build:min",
+    "build:tsc": "tsc --emitDeclarationOnly",
+    "build:cjs": "esbuild src/index.ts --sourcemap --bundle --outfile=build/index.cjs --platform=neutral --target=node6 --minify-syntax",
+    "build:esm": "",
+    "build:min": "esbuild src/maml.ts --sourcemap --bundle --outfile=build/maml.min.js --platform=neutral --target=node6 --minify-whitespace --minify-identifiers --minify-syntax",
     "test": "npm run build && vitest",
     "test:bench":"vitest bench test/maml.bench.js",
     "coverage": "npm run build && vitest run --coverage"

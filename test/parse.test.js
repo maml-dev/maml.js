@@ -55,7 +55,7 @@ describe('parse', () => {
   })
 
   test('maml in global', async () => {
-    await import('../build/maml.js')
+    // await import('../build/maml.js')
     expect('MAML' in globalThis).toBeTruthy()
   })
 })

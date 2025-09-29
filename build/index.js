@@ -1,2 +1,5 @@
-export { parse } from './parse.js';
-export { stringify } from './stringify.js';
+import './maml.min.js'
+
+export const parse = MAML.parse
+export const stringify = MAML.stringify
+export default MAML
