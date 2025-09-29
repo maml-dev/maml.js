@@ -322,10 +322,10 @@ export function parse(source) {
     function toSafeNumber(str) {
         if (str == '-0')
             return -0;
-        const num = BigInt(str);
+        const num = Number(str);
         return num >= Number.MIN_SAFE_INTEGER && num <= Number.MAX_SAFE_INTEGER
-            ? Number(num)
-            : num;
+            ? num
+            : BigInt(str);
     }
     function expectValue(value) {
         if (value === undefined) {
