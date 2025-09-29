@@ -3,49 +3,64 @@ export function stringify(value: any): string {
 }
 
 function doStringify(value: any, level: number): string {
-  if (typeof value === 'string') {
-    return JSON.stringify(value)
-  } else if (typeof value === 'number') {
-    return `${value}`
-  } else if (typeof value === 'bigint') {
-    return `${value}`
-  } else if (typeof value === 'boolean') {
-    return `${value}`
-  } else if (value === null || typeof value === 'undefined') {
-    return `null`
-  } else if (Array.isArray(value)) {
-    if (value.length === 0) {
-      return `[]`
+  const kind =
+    value === null ? 'null' : Array.isArray(value) ? 'array' : typeof value
+
+  switch (kind) {
+    case 'string':
+      return JSON.stringify(value)
+
+    case 'boolean':
+    case 'bigint':
+    case 'number':
+      return `${value}`
+
+    case 'null':
+    case 'undefined':
+      return 'null'
+
+    case 'array': {
+      const len = value.length
+      if (len === 0) return '[]'
+
+      const childIndent = getIndent(level + 1)
+      const parentIndent = getIndent(level)
+      let out = '[\n'
+      for (let i = 0; i < len; i++) {
+        if (i > 0) out += '\n'
+        out += childIndent + doStringify(value[i], level + 1)
+      }
+      return out + '\n' + parentIndent + ']'
     }
-    const items = value
-      .map((v) => getIndent(level + 1) + doStringify(v, level + 1))
-      .join('\n')
-    return '[' + '\n' + items + '\n' + getIndent(level) + ']'
-  } else if (typeof value === 'object') {
-    const keys = Object.keys(value)
-    if (keys.length === 0) {
-      return '{}'
-    }
-    const entries = keys
-      .map(
-        (key) =>
-          getIndent(level + 1) +
+
+    case 'object': {
+      const keys = Object.keys(value)
+      const len = keys.length
+      if (len === 0) return '{}'
+
+      const childIndent = getIndent(level + 1)
+      const parentIndent = getIndent(level)
+      let out = '{\n'
+      for (let i = 0; i < len; i++) {
+        if (i > 0) out += '\n'
+        const key = keys[i]
+        out +=
+          childIndent +
           doKeyStringify(key) +
           ': ' +
-          doStringify(value[key], level + 1),
-      )
-      .join('\n')
-    return '{' + '\n' + entries + '\n' + getIndent(level) + '}'
+          doStringify(value[key], level + 1)
+      }
+      return out + '\n' + parentIndent + '}'
+    }
+
+    default:
+      throw new Error(`Unsupported value type: ${kind}`)
   }
-  throw new Error(`Unsupported value type: ${typeof value}`)
 }
 
+const KEY_RE = /^[A-Za-z0-9_-]+$/
 function doKeyStringify(key: string) {
-  if (/^[A-Za-z0-9_-]+$/.test(key)) {
-    return key
-  } else {
-    return JSON.stringify(key)
-  }
+  return KEY_RE.test(key) ? key : JSON.stringify(key)
 }
 
 function getIndent(level: number) {

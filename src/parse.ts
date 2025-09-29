@@ -1,3 +1,14 @@
+const ESCAPE_MAP: Record<string, string> = {
+  '"': '"',
+  '\\': '\\',
+  '/': '/',
+  b: '\b',
+  f: '\f',
+  n: '\n',
+  r: '\r',
+  t: '\t',
+}
+
 export function parse(source: string): any {
   if (typeof source !== 'string') throw TypeError('Source must be a string')
 
@@ -68,16 +79,7 @@ export function parse(source: string): any {
           }
           str += String.fromCharCode(parseInt(unicode, 16))
         } else {
-          const escapedChar = {
-            '"': '"',
-            '\\': '\\',
-            '/': '/',
-            b: '\b',
-            f: '\f',
-            n: '\n',
-            r: '\r',
-            t: '\t',
-          }[ch]
+          const escapedChar = ESCAPE_MAP[ch]
           if (!escapedChar) {
             throw new SyntaxError(
               errorSnippet(`Invalid escape sequence ${JSON.stringify(ch)}`),
@@ -112,7 +114,6 @@ export function parse(source: string): any {
     if (ch !== '"' || lookahead2() !== '""') return
     next()
     next()
-
     next()
     let hasLeadingNewline = false
     if ((ch as string) === '\n') {
@@ -142,6 +143,7 @@ export function parse(source: string): any {
   function parseNumber() {
     if (!isDigit(ch) && ch !== '-') return
     let numStr = ''
+    let float = false
     if (ch === '-') {
       numStr += ch
       next()
@@ -159,6 +161,7 @@ export function parse(source: string): any {
       }
     }
     if (ch === '.') {
+      float = true
       numStr += ch
       next()
       if (!isDigit(ch)) {
@@ -170,6 +173,7 @@ export function parse(source: string): any {
       }
     }
     if (ch === 'e' || ch === 'E') {
+      float = true
       numStr += ch
       next()
       if ((ch as string) === '+' || (ch as string) === '-') {
@@ -184,7 +188,7 @@ export function parse(source: string): any {
         next()
       }
     }
-    return isInteger(numStr) ? toSafeNumber(numStr) : parseFloat(numStr)
+    return float ? parseFloat(numStr) : toSafeNumber(numStr)
   }
 
   function parseObject() {
@@ -235,7 +239,7 @@ export function parse(source: string): any {
 
   function parseKey() {
     let identifier = ''
-    while (/[A-Za-z0-9_-]/.test(ch)) {
+    while (isKeyChar(ch)) {
       identifier += ch
       next()
     }
@@ -332,16 +336,22 @@ export function parse(source: string): any {
     return ch >= '0' && ch <= '9'
   }
 
-  function isInteger(value: string) {
-    return /^-?[0-9]+$/.test(value)
+  function isKeyChar(ch: string) {
+    return (
+      (ch >= 'A' && ch <= 'Z') ||
+      (ch >= 'a' && ch <= 'z') ||
+      (ch >= '0' && ch <= '9') ||
+      ch === '_' ||
+      ch === '-'
+    )
   }
 
   function toSafeNumber(str: string) {
     if (str == '-0') return -0
-    const num = BigInt(str)
+    const num = Number(str)
     return num >= Number.MIN_SAFE_INTEGER && num <= Number.MAX_SAFE_INTEGER
-      ? Number(num)
-      : num
+      ? num
+      : BigInt(str)
   }
 
   function expectValue(value: unknown) {
