@@ -1,14 +1,3 @@
-const ESCAPE_MAP: Record<string, string> = {
-  '"': '"',
-  '\\': '\\',
-  '/': '/',
-  b: '\b',
-  f: '\f',
-  n: '\n',
-  r: '\r',
-  t: '\t',
-}
-
 export function parse(source: string): any {
   if (typeof source !== 'string') throw TypeError('Source must be a string')
 
@@ -67,22 +56,35 @@ export function parse(source: string): any {
       next()
       if (escaped) {
         if ((ch as string) === 'u') {
-          let unicode = ''
-          for (let i = 0; i < 4; i++) {
-            next()
-            if (!isHexDigit(ch)) {
-              throw new SyntaxError(
-                errorSnippet(`Invalid Unicode escape sequence`),
-              )
-            }
-            unicode += ch
+          next()
+          if (ch as string !== '{') {
+            throw new SyntaxError(errorSnippet(errorMap.u + ' ' + JSON.stringify(ch) + ' (expected "{")'))
           }
-          str += String.fromCharCode(parseInt(unicode, 16))
+          let hex = ''
+          while (true) {
+            next()
+            if (ch as string === '}') break
+            if (!isHexDigit(ch)) {
+              throw new SyntaxError(errorSnippet(errorMap.u + ' ' + JSON.stringify(ch)))
+            }
+            hex += ch
+            if (hex.length > 6) {
+              throw new SyntaxError(errorSnippet(errorMap.u + ' (too many hex digits)'))
+            }
+          }
+          if (hex.length === 0) {
+            throw new SyntaxError(errorSnippet(errorMap.u))
+          }
+          const codePoint = parseInt(hex, 16)
+          if (codePoint > 0x10ffff) {
+            throw new SyntaxError(errorSnippet(errorMap.u + ' (out of range)'))
+          }
+          str += String.fromCodePoint(codePoint)
         } else {
-          const escapedChar = ESCAPE_MAP[ch]
+          const escapedChar = escapeMap[ch]
           if (!escapedChar) {
             throw new SyntaxError(
-              errorSnippet(`Invalid escape sequence ${JSON.stringify(ch)}`),
+              errorSnippet(errorMap.u + ' ' + JSON.stringify(ch)),
             )
           }
           str += escapedChar
@@ -388,4 +390,16 @@ export function parse(source: string): any {
     const pointer = `    ${'.'.repeat(Math.max(0, lastLine.length - 1))}^\n`
     return `${message} on line ${lineNumber}.\n\n${snippet}${pointer}`
   }
+}
+
+const escapeMap: Record<string, string> = {
+  '"': '"',
+  '\\': '\\',
+  n: '\n',
+  r: '\r',
+  t: '\t',
+}
+
+const errorMap = {
+  u: 'Invalid escape sequence',
 }

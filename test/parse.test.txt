@@ -104,39 +104,44 @@ false
 "Path C:\\\\Program Files\\\\App"
 
 === string with solidus
-"Use https:\/\/example.com\/api"
+"Use https://maml.dev/"
 ---
-"Use https:\/\/example.com\/api"
+"Use https://maml.dev/"
 
-=== string with control escapes
-"\b\f\n\r\t"
+=== string containing all compact escape sequence
+"\n\r\t\\\""
 ---
-"\b\f\n\r\t"
+"\n\r\t\\\""
 
 === string with unicode escape
-"\u263A"
+"\u{263A}"
 ---
 "\u263A"
 
-=== string with surrogate pair (smiling face)
-"\uD83D\uDE00"
+=== string with very short unicode escape
+"\u{C}"
 ---
-"\uD83D\uDE00"
+"\u000C"
 
-=== string with actual emoji
-"😀 😁 😂 🤣 😜"
+=== string with emoji
+"\u{1F95D}"
 ---
-"😀 😁 😂 🤣 😜"
+"🥝"
+
+=== string with null and unit separators
+"\u{0000}\u{001F}"
+---
+"\u0000\u001F"
+
+=== string with max unicode range
+"\u{10FFFF}"
+---
+"\uDBFF\uDFFF"
 
 === multilingual string
 "Привет 世界 مرحبا"
 ---
 "Привет 世界 مرحبا"
-
-=== string with null and unit separators
-"\u0000\u001F"
----
-"\u0000\u001F"
 
 === simple object one pair
 {"a":1}
@@ -218,14 +223,9 @@ false
 {}
 
 === object with unicode and escapes mixed
-{"text":"Line1\nLine2\u263A","emoji":"\uD83D\uDE80","slash":"a\/b","quote":"\""}
+{"text":"Line1\nLine2\u{263A}","emoji":"\u{D83D}\u{DE80}","slash":"a/b","quote":"\""}
 ---
-{"text":"Line1\nLine2\u263A","emoji":"\uD83D\uDE80","slash":"a\/b","quote":"\""}
-
-=== string containing all common escapes together
-"\\\"\/\b\f\n\r\t"
----
-"\\\"\/\b\f\n\r\t"
+{"text":"Line1\nLine2\u263A","emoji":"\uD83D\uDE80","slash":"a/b","quote":"\""}
 
 === array with empty structures nested
 [[],{},[[],{}],{}]
@@ -603,7 +603,7 @@ false
 {
   "text": "Привет"
   "emoji": "😀"
-  "u": "\u263A"
+  "u": "\u{263A}"
 }
 ---
 {"text":"Привет","emoji":"😀","u":"\u263A"}
@@ -795,10 +795,10 @@ second line
 
 === escape sequences are literal (no interpretation)
 """
-There is no escaping, so \n, \t, \u0022 stay as-is.
+There is no escaping, so \n, \t, \u{0022} stay as-is.
 """
 ---
-"There is no escaping, so \\n, \\t, \\u0022 stay as-is.\n"
+"There is no escaping, so \\n, \\t, \\u{0022} stay as-is.\n"
 
 === hash signs inside are content (not comments)
 """

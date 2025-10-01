@@ -38,21 +38,53 @@ Invalid escape sequence "q" on line 1.
     "bad \q escape"
     ......^
 
-=== invalid unicode escape (too short)
-"\u263"
+=== invalid unicode escape (JSON style)
+"\u0022"
 ---
-Invalid Unicode escape sequence on line 1.
+Invalid escape sequence "0" (expected "{") on line 1.
 
-    "\u263"
-    ......^
+    "\u0022"
+    ...^
+
+=== invalid unicode escape (now closed)
+"\u{263"
+---
+Invalid escape sequence "\"" on line 1.
+
+    "\u{263"
+    .......^
 
 === invalid unicode escape (bad hex)
-"\u26G4"
+"\u{26G4}"
 ---
- Invalid Unicode escape sequence on line 1.
+Invalid escape sequence "G" on line 1.
 
-    "\u26G4"
-    .....^
+    "\u{26G4}"
+    ......^
+
+=== invalid unicode escape (too short)
+"\u{}"
+---
+Invalid escape sequence on line 1.
+
+    "\u{}"
+    ....^
+
+=== invalid unicode escape (too big)
+"\u{111FFFA}"
+---
+Invalid escape sequence (too many hex digits) on line 1.
+
+    "\u{111FFFA}"
+    ..........^
+
+=== invalid unicode escape (outside the valid Unicode range)
+"\u{110000}"
+---
+Invalid escape sequence (out of range) on line 1.
+
+    "\u{110000}"
+    ..........^
 
 === newline in string literal
 "line1

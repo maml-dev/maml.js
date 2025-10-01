@@ -1,13 +1,3 @@
-const ESCAPE_MAP = {
-    '"': '"',
-    '\\': '\\',
-    '/': '/',
-    b: '\b',
-    f: '\f',
-    n: '\n',
-    r: '\r',
-    t: '\t',
-};
 export function parse(source) {
     if (typeof source !== 'string')
         throw TypeError('Source must be a string');
@@ -56,20 +46,36 @@ export function parse(source) {
             next();
             if (escaped) {
                 if (ch === 'u') {
-                    let unicode = '';
-                    for (let i = 0; i < 4; i++) {
-                        next();
-                        if (!isHexDigit(ch)) {
-                            throw new SyntaxError(errorSnippet(`Invalid Unicode escape sequence`));
-                        }
-                        unicode += ch;
+                    next();
+                    if (ch !== '{') {
+                        throw new SyntaxError(errorSnippet(errorMap.u + ' ' + JSON.stringify(ch) + ' (expected "{")'));
                     }
-                    str += String.fromCharCode(parseInt(unicode, 16));
+                    let hex = '';
+                    while (true) {
+                        next();
+                        if (ch === '}')
+                            break;
+                        if (!isHexDigit(ch)) {
+                            throw new SyntaxError(errorSnippet(errorMap.u + ' ' + JSON.stringify(ch)));
+                        }
+                        hex += ch;
+                        if (hex.length > 6) {
+                            throw new SyntaxError(errorSnippet(errorMap.u + ' (too many hex digits)'));
+                        }
+                    }
+                    if (hex.length === 0) {
+                        throw new SyntaxError(errorSnippet(errorMap.u));
+                    }
+                    const codePoint = parseInt(hex, 16);
+                    if (codePoint > 0x10ffff) {
+                        throw new SyntaxError(errorSnippet(errorMap.u + ' (out of range)'));
+                    }
+                    str += String.fromCodePoint(codePoint);
                 }
                 else {
-                    const escapedChar = ESCAPE_MAP[ch];
+                    const escapedChar = escapeMap[ch];
                     if (!escapedChar) {
-                        throw new SyntaxError(errorSnippet(`Invalid escape sequence ${JSON.stringify(ch)}`));
+                        throw new SyntaxError(errorSnippet(errorMap.u + ' ' + JSON.stringify(ch)));
                     }
                     str += escapedChar;
                 }
@@ -358,3 +364,13 @@ export function parse(source) {
         return `${message} on line ${lineNumber}.\n\n${snippet}${pointer}`;
     }
 }
+const escapeMap = {
+    '"': '"',
+    '\\': '\\',
+    n: '\n',
+    r: '\r',
+    t: '\t',
+};
+const errorMap = {
+    u: 'Invalid escape sequence',
+};
