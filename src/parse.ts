@@ -57,19 +57,27 @@ export function parse(source: string): any {
       if (escaped) {
         if ((ch as string) === 'u') {
           next()
-          if (ch as string !== '{') {
-            throw new SyntaxError(errorSnippet(errorMap.u + ' ' + JSON.stringify(ch) + ' (expected "{")'))
+          if ((ch as string) !== '{') {
+            throw new SyntaxError(
+              errorSnippet(
+                errorMap.u + ' ' + JSON.stringify(ch) + ' (expected "{")',
+              ),
+            )
           }
           let hex = ''
           while (true) {
             next()
-            if (ch as string === '}') break
+            if ((ch as string) === '}') break
             if (!isHexDigit(ch)) {
-              throw new SyntaxError(errorSnippet(errorMap.u + ' ' + JSON.stringify(ch)))
+              throw new SyntaxError(
+                errorSnippet(errorMap.u + ' ' + JSON.stringify(ch)),
+              )
             }
             hex += ch
             if (hex.length > 6) {
-              throw new SyntaxError(errorSnippet(errorMap.u + ' (too many hex digits)'))
+              throw new SyntaxError(
+                errorSnippet(errorMap.u + ' (too many hex digits)'),
+              )
             }
           }
           if (hex.length === 0) {
