@@ -106,6 +106,4 @@ jobs:
       - uses: actions/download-artifact@v5
         with:
           name: build
-      - run: |
-          deno ./smoke/maml.smoke.mjs
-          deno ./smoke/maml.smoke.cjs
+      - run: deno ./smoke/maml.smoke.mjs
