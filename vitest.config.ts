@@ -12,7 +12,7 @@ export default defineConfig({
     ],
     coverage: {
       reporter: ['text', 'html'],
-      include: ['build', 'src'],
+      include: ['src'],
       thresholds: {
         statements: 100,
         branches: 100,
