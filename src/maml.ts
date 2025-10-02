@@ -1,7 +1,7 @@
 import { parse, stringify } from './index.js'
 
 /* v8 ignore next 7 */
-const getGlobal = function() {
+const getGlobal = function () {
   if (typeof globalThis !== 'undefined') return globalThis
   if (typeof window !== 'undefined') return window
   // @ts-ignore
