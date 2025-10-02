@@ -1,5 +1,5 @@
 import assert from 'node:assert'
-import '../maml.min.js'
+import '../build/index.js'
 
 const d1 = {
   project: 'MAML',

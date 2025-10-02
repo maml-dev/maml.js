@@ -2,10 +2,15 @@ name: check
 
 on: [push, pull_request]
 
+permissions: {}
+
 jobs:
   code-style:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
       - run: npm ci
       - run: npm run fmt:check
