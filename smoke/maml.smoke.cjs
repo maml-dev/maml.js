@@ -1,5 +1,5 @@
 const assert = require('assert')
-require('../build/index.cjs')
+const MAML = require('../build/index.cjs')
 
 const d1 = {
   project: 'MAML',

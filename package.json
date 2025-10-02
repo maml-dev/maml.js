@@ -25,7 +25,7 @@
     "test:bench": "vitest bench test/maml.bench.js",
     "test:workflow": "zizmor .github/workflows -v -p --min-severity=medium",
     "smoke:cjs": "node smoke/maml.smoke.cjs",
-    "smoke:esm": "node smoke/maml.smoke.esm",
+    "smoke:esm": "node smoke/maml.smoke.mjs",
     "coverage": "npm run build && vitest run --coverage"
   },
   "devDependencies": {
