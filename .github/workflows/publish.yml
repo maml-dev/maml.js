@@ -41,6 +41,8 @@ jobs:
           path: |
             build
             package.json
+            package-cjs.json
+            package-esm.json
           retention-days: 1
 
   npm-publish:
