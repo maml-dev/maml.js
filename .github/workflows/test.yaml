@@ -49,7 +49,7 @@ jobs:
 
   smoke-node:
     needs: build
-    name: smoke-node-${{ matrix.node-version }}
+    name: smoke-node${{ matrix.node-version }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
