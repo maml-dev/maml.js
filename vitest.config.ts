@@ -12,7 +12,11 @@ export default defineConfig({
     ],
     coverage: {
       reporter: ['text', 'html'],
-      include: ['build'],
+      include: ['build/*.js'],
+      exclude: ['build/maml.min.js'],
+      provider: 'v8',
+      experimentalAstAwareRemapping: true,
+      ignoreEmptyLines: true,
       thresholds: {
         statements: 100,
         branches: 100,

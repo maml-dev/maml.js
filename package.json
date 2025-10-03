@@ -6,26 +6,37 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "files": [
-    "build"
+    "build/index.js",
+    "build/*.d.ts"
   ],
+  "engines": {
+    "node": ">=12"
+  },
   "scripts": {
     "fmt": "prettier --write src",
     "fmt:check": "prettier --check src",
-    "build": "npm run build:tsc && npm run build:esbuild",
-    "build:tsc": "tsc",
-    "build:esbuild": "esbuild build/maml.js --bundle --outfile=maml.min.js --platform=neutral --target=node20 --minify-whitespace --minify-identifiers --minify-syntax",
+    "build": "concurrently 'npm:build:*'",
+    "build:tsc": "tsc --emitDeclarationOnly",
+    "build:pkgjson": "node scripts/build-pkgjson.js",
+    "build:esm": "esbuild src/index.ts --format=esm --sourcemap --bundle --outfile=build/index.js --platform=neutral --target=node12 --minify-syntax",
+    "build:cjs": "esbuild src/index.ts --format=cjs --sourcemap --bundle --outfile=build/index.cjs --platform=neutral --target=node6 --minify-syntax",
+    "build:min": "esbuild src/maml.ts --sourcemap --bundle --outfile=build/maml.min.js --platform=neutral --target=node6 --minify-whitespace --minify-identifiers --minify-syntax",
     "test": "npm run build && vitest",
-    "test:bench":"vitest bench test/maml.bench.js",
+    "test:bench": "vitest bench test/maml.bench.js",
+    "test:workflow": "zizmor .github/workflows -v -p --min-severity=medium",
+    "smoke:cjs": "node smoke/maml.smoke.cjs",
+    "smoke:esm": "node smoke/maml.smoke.mjs",
     "coverage": "npm run build && vitest run --coverage"
   },
   "devDependencies": {
     "@iarna/toml": "^2.2.5",
     "@vitest/coverage-v8": "^3.2.4",
+    "concurrently": "^9.2.1",
     "esbuild": "^0.25.10",
     "ini": "^5.0.0",
     "prettier": "^3.6.2",
     "toml": "^3.0.0",
-    "typescript": "^5.9.2",
+    "typescript": "^5.9.3",
     "vitest": "^3.2.4",
     "yaml": "^2.8.1"
   },

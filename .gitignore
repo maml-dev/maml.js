@@ -3,3 +3,7 @@ coverage/
 yarn.lock
 pnpm-lock.yaml
 deno.lock
+
+package-cjs.json
+package-esm.json
+

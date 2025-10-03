@@ -2,33 +2,108 @@ name: test
 
 on: [push, pull_request]
 
+permissions: {}
+
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - name: Use Node.js 24
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: build
+          path: |
+            build
+            package.json
+          retention-days: 1
+
   test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: 'npm'
+      - uses: actions/download-artifact@v5
+        with:
+          name: build
+      - name: Fetch deps
+        run: npm ci
+      - name: Run tests
+        run: npm run coverage
+
+  smoke-node:
+    needs: build
+    name: smoke-node${{ matrix.node-version }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [20.x, 22.x]
+        node-version: [6, 12, 18, 20, 24]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: ${{ matrix.node-version }}
-      - run: npm i
-      - run: npm test
-        timeout-minutes: 1
-        env:
-          FORCE_COLOR: 3
-
-  coverage:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/download-artifact@v5
         with:
-          node-version: 22.x
-      - run: npm i
-      - run: npm run coverage
-        timeout-minutes: 1
-        env:
-          FORCE_COLOR: 3
+          name: build
+
+      - run: npm run smoke:cjs
+      - if: ${{ matrix.node-version >= 12}}
+        run: npm run smoke:esm
+
+  smoke-bun:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - name: Setup Bun
+        uses: antongolub/action-setup-bun@f0b9f339a7ce9ba1174a58484e4dc9bbd6f7b133 # v1.13.2
+      - uses: actions/download-artifact@v5
+        with:
+          name: build
+      - run: |
+          bun ./smoke/maml.smoke.mjs
+          bun ./smoke/maml.smoke.cjs
+
+  smoke-deno:
+    runs-on: ubuntu-latest
+    needs: build
+    name: smoke-deno${{ matrix.deno-version }}
+    strategy:
+      matrix:
+        deno-version: [1, 2]
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - name: Setup Deno
+        uses: denoland/setup-deno@909cc5acb0fdd60627fb858598759246509fa755 # v2.0.2
+        with:
+          deno-version: ${{ matrix.deno-version }}
+      - run: deno install npm:types/node npm:types/fs-extra
+      - uses: actions/download-artifact@v5
+        with:
+          name: build
+      - run: deno ./smoke/maml.smoke.mjs

@@ -1,3 +1,27 @@
+"use strict";
+var __defProp = Object.defineProperty;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __getOwnPropNames = Object.getOwnPropertyNames;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __export = (target, all) => {
+  for (var name in all)
+    __defProp(target, name, { get: all[name], enumerable: !0 });
+}, __copyProps = (to, from, except, desc) => {
+  if (from && typeof from == "object" || typeof from == "function")
+    for (var keys = __getOwnPropNames(from), i = 0, n = keys.length, key; i < n; i++)
+      key = keys[i], !__hasOwnProp.call(to, key) && key !== except && __defProp(to, key, { get: ((k) => from[k]).bind(null, key), enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+  return to;
+};
+var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: !0 }), mod);
+
+// src/index.ts
+var index_exports = {};
+__export(index_exports, {
+  parse: () => parse,
+  stringify: () => stringify
+});
+module.exports = __toCommonJS(index_exports);
+
 // src/parse.ts
 function parse(source) {
   if (typeof source != "string") throw TypeError("Source must be a string");
@@ -8,8 +32,7 @@ function parse(source) {
     throw new SyntaxError(errorSnippet());
   return expectValue(value), value;
   function next() {
-    pos < source.length ? (ch = source[pos], pos++) : (ch = "", done = !0), ch === `
-` && lineNumber++;
+    pos < source.length ? (ch = source[pos], pos++) : (ch = "", done = !0), ch === "\n" && lineNumber++;
   }
   function lookahead2() {
     return source.substring(pos, pos + 2);
@@ -61,8 +84,7 @@ function parse(source) {
       else {
         if (ch === '"')
           break;
-        if (ch === `
-`)
+        if (ch === "\n")
           throw new SyntaxError(
             errorSnippet(
               'Use """ for multiline strings or escape newlines with "\\n"'
@@ -70,7 +92,7 @@ function parse(source) {
           );
         if (ch < "")
           throw new SyntaxError(
-            errorSnippet(`Unescaped control character ${JSON.stringify(ch)}`)
+            errorSnippet("Unescaped control character ".concat(JSON.stringify(ch)))
           );
         str += ch;
       }
@@ -80,8 +102,7 @@ function parse(source) {
     if (ch !== '"' || lookahead2() !== '""') return;
     next(), next(), next();
     let hasLeadingNewline = !1;
-    ch === `
-` && (hasLeadingNewline = !0, next());
+    ch === "\n" && (hasLeadingNewline = !0, next());
     let str = "";
     for (; !done; ) {
       if (ch === '"' && lookahead2() === '""') {
@@ -129,7 +150,7 @@ function parse(source) {
       let keyPos = pos, key;
       if (ch === '"' ? key = parseString() : key = parseKey(), Object.prototype.hasOwnProperty.call(obj, key))
         throw pos = keyPos, new SyntaxError(
-          errorSnippet(`Duplicate key ${JSON.stringify(key)}`)
+          errorSnippet("Duplicate key ".concat(JSON.stringify(key)))
         );
       if (skipWhitespace(), ch !== ":")
         throw new SyntaxError(errorSnippet());
@@ -196,23 +217,20 @@ function parse(source) {
   function skipWhitespace() {
     let hasNewline = !1;
     for (; isWhitespace(ch); )
-      hasNewline || (hasNewline = ch === `
-`), next();
+      hasNewline || (hasNewline = ch === "\n"), next();
     let hasNewlineAfterComment = skipComment();
     return hasNewline || hasNewlineAfterComment;
   }
   function skipComment() {
     if (ch === "#") {
-      for (; !done && ch !== `
-`; )
+      for (; !done && ch !== "\n"; )
         next();
       return skipWhitespace();
     }
     return !1;
   }
   function isWhitespace(ch2) {
-    return ch2 === " " || ch2 === `
-` || ch2 === "	" || ch2 === "\r";
+    return ch2 === " " || ch2 === "\n" || ch2 === "	" || ch2 === "\r";
   }
   function isHexDigit(ch2) {
     return ch2 >= "0" && ch2 <= "9" || ch2 >= "A" && ch2 <= "F";
@@ -232,25 +250,18 @@ function parse(source) {
     if (value2 === void 0)
       throw new SyntaxError(errorSnippet());
   }
-  function errorSnippet(message = `Unexpected character ${JSON.stringify(ch)}`) {
+  function errorSnippet(message = "Unexpected character ".concat(JSON.stringify(ch))) {
     ch || (message = "Unexpected end of input");
-    let lines = source.substring(pos - 40, pos).split(`
-`), lastLine = lines.at(-1) || "", postfix = source.substring(pos, pos + 40).split(`
-`, 1).at(0) || "";
+    let lines = source.substring(pos - 40, pos).split("\n"), lastLine = lines.at(-1) || "", postfix = source.substring(pos, pos + 40).split("\n", 1).at(0) || "";
     lastLine === "" && (lastLine = lines.at(-2) || "", lastLine += " ", lineNumber--, postfix = "");
-    let snippet = `    ${lastLine}${postfix}
-`, pointer = `    ${".".repeat(Math.max(0, lastLine.length - 1))}^
-`;
-    return `${message} on line ${lineNumber}.
-
-${snippet}${pointer}`;
+    let snippet = "    ".concat(lastLine).concat(postfix, "\n"), pointer = "    ".concat(".".repeat(Math.max(0, lastLine.length - 1)), "^\n");
+    return "".concat(message, " on line ").concat(lineNumber, ".\n\n").concat(snippet).concat(pointer);
   }
 }
 var escapeMap = {
   '"': '"',
   "\\": "\\",
-  n: `
-`,
+  n: "\n",
   r: "\r",
   t: "	"
 }, errorMap = {
@@ -269,37 +280,31 @@ function doStringify(value, level) {
     case "boolean":
     case "bigint":
     case "number":
-      return `${value}`;
+      return "".concat(value);
     case "null":
     case "undefined":
       return "null";
     case "array": {
       let len = value.length;
       if (len === 0) return "[]";
-      let childIndent = getIndent(level + 1), parentIndent = getIndent(level), out = `[
-`;
+      let childIndent = getIndent(level + 1), parentIndent = getIndent(level), out = "[\n";
       for (let i = 0; i < len; i++)
-        i > 0 && (out += `
-`), out += childIndent + doStringify(value[i], level + 1);
-      return out + `
-` + parentIndent + "]";
+        i > 0 && (out += "\n"), out += childIndent + doStringify(value[i], level + 1);
+      return out + "\n" + parentIndent + "]";
     }
     case "object": {
       let keys = Object.keys(value), len = keys.length;
       if (len === 0) return "{}";
-      let childIndent = getIndent(level + 1), parentIndent = getIndent(level), out = `{
-`;
+      let childIndent = getIndent(level + 1), parentIndent = getIndent(level), out = "{\n";
       for (let i = 0; i < len; i++) {
-        i > 0 && (out += `
-`);
+        i > 0 && (out += "\n");
         let key = keys[i];
         out += childIndent + doKeyStringify(key) + ": " + doStringify(value[key], level + 1);
       }
-      return out + `
-` + parentIndent + "}";
+      return out + "\n" + parentIndent + "}";
     }
     default:
-      throw new Error(`Unsupported value type: ${kind}`);
+      throw new Error("Unsupported value type: ".concat(kind));
   }
 }
 var KEY_RE = /^[A-Za-z0-9_-]+$/;
@@ -309,8 +314,4 @@ function doKeyStringify(key) {
 function getIndent(level) {
   return " ".repeat(2 * level);
 }
-export {
-  parse,
-  stringify
-};
-//# sourceMappingURL=index.js.map
+//# sourceMappingURL=index.cjs.map
