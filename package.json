@@ -3,10 +3,18 @@
   "version": "0.0.3",
   "description": "MAML parser",
   "type": "module",
-  "main": "build/index.js",
+  "main": "build/index.cjs",
   "types": "build/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./build/index.d.ts",
+      "import": "./build/index.js",
+      "require": "./build/index.cjs"
+    }
+  },
   "files": [
-    "build/index.js",
+    "build/*.js",
+    "build/*.cjs",
     "build/*.d.ts"
   ],
   "engines": {
