@@ -5,8 +5,8 @@ A tiny, modern, well‑tested implementation of the [MAML](https://maml.dev) dat
 - Spec‑accurate parser and pretty serializer
 - Zero dependencies, ESM first
 - 100% test coverage (statements, branches, lines) verified with Vitest + v8
-- Works in Node.js, Deno, Bun, and the browser
-- 14x times faster than YAML
+- Works in Node.js, Deno, Bun and browsers
+- [Significantly faster](./BENCHMARK.md) than YAML or TOML alternatives
 - Only 2kB gzipped
 
 ## Installation
