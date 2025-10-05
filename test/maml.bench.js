@@ -4,44 +4,12 @@ import YAML from 'yaml'
 import INI from 'ini'
 import TOML from 'toml'
 import TOML2 from '@iarna/toml'
+import fs from 'node:fs'
+import path from 'node:path'
 
-const maml = `
-{
-  project: "MAML"
-  tags: [
-    "minimal"
-    "readable"
-  ]
-
-  # A simple nested object
-  spec: {
-    version: 1
-    author: "Anton Medvedev"
-  }
-
-  # Array of objects with nested objects
-  examples: [
-    {
-      json: {
-        name: "JSON"
-        born: 2001
-      }
-    }
-    {
-      maml: {
-        name: "MAML"
-        born: 2025
-      }
-    }    
-  ]
-
-  notes: """
-This is a multiline strings.
-Keeps formatting as-is.
-"""
-}
-  `
-
+const __dirname = path.dirname(new URL(import.meta.url).pathname)
+const root = path.resolve(__dirname, '..')
+const maml = fs.readFileSync(path.resolve(root, 'test/fixtures/basic.maml'), 'utf8')
 const obj = {
   "project": "MAML",
   "tags": [
