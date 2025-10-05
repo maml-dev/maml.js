@@ -15,11 +15,11 @@ A tiny, modern, well‑tested implementation of the [MAML](https://maml.dev) dat
 npm install maml.js
 ```
 
-Or use the prebuilt bundle [`maml.min.js`](maml.min.js).
+Or use the prebuilt bundle [`maml.min.js`](./build/maml.min.js).
 
 ## Usage
 
-### Node / Deno
+### Node.js, Deno, Bun
 
 ```ts
 import { parse, stringify } from 'maml.js'

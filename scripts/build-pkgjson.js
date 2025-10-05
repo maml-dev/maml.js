@@ -52,5 +52,3 @@ const pkgEsm = {
 
 await fs.writeFile(path.join(root, 'package-cjs.json'), JSON.stringify(pkgCjs, null, 2))
 await fs.writeFile(path.join(root, 'package-esm.json'), JSON.stringify(pkgEsm, null, 2))
-
-
