@@ -5,7 +5,13 @@
   "type": "module",
   "main": "build/index.cjs",
   "types": "build/index.d.ts",
-  "exports": "./build/index.js",
+  "exports": {
+    ".": {
+      "types": "./build/index.d.ts",
+      "import": "./build/index.js",
+      "require": "./build/index.cjs"
+    }
+  },
   "files": [
     "build/*.js",
     "build/*.cjs",
