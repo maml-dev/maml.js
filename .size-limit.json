@@ -1,0 +1,45 @@
+[
+  {
+    "name": "ESM",
+    "path": [
+      "build/index.js",
+      "build/*.d.ts",
+      "README.md",
+      "LICENSE",
+      "package-esm.json"
+    ],
+    "limit": "12.85 kB",
+    "brotli": false,
+    "gzip": false
+  },
+  {
+    "name": "CJS",
+    "path": [
+      "build/index.cjs",
+      "build/*.d.ts",
+      "README.md",
+      "LICENSE",
+      "package-cjs.json"
+    ],
+    "limit": "13.95 kB",
+    "brotli": false,
+    "gzip": false
+  },
+  {
+    "name": "maml.min.js",
+    "path": [
+      "build/maml.min.js"
+    ],
+    "limit": "4.95 kB",
+    "brotli": false,
+    "gzip": false
+  },
+  {
+    "name": "maml.min.js gzipped",
+    "path": [
+      "build/maml.min.js"
+    ],
+    "limit": "2.00 kB",
+    "gzip": true
+  }
+]
