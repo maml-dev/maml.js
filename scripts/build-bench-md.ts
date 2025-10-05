@@ -7,6 +7,7 @@ import { Bench, type Task } from 'tinybench'
 import * as MAML from 'maml.js'
 import YAML from 'yaml'
 import YAML2 from 'js-yaml'
+import YAML3 from 'yaml-js'
 import INI from 'ini'
 import TOML from 'toml'
 import TOML2 from '@iarna/toml'
@@ -62,6 +63,18 @@ const tools: Tool[] = [
     api: {
       stringify: YAML2.dump,
       parse: YAML2.load
+    },
+    fixtures: {
+      stringify: data,
+      parse: fixtures.yaml
+    }
+  },
+  {
+    name: 'yaml-js',
+    ref: 'https://github.com/connec/yaml-js',
+    api: {
+      stringify: YAML3.dump,
+      parse: YAML3.load
     },
     fixtures: {
       stringify: data,
