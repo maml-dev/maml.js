@@ -9,17 +9,19 @@
 ## Parse
 | # | Package | Ops/sec | Avg time (ms) | ± % | slower x |
 | --- | --- | ---: | ---: | ---: | ---: |
-| 1 | [`maml.js`](https://github.com/maml-dev/maml.js) | 224399.18 | 0.005 | ±48.94% | 1.00 |
-| 2 | [`ini`](https://github.com/npm/ini) | 176945.17 | 0.006 | ±43.27% | 1.27 |
-| 3 | [`js-yaml`](https://github.com/nodeca/js-yaml) | 175167.53 | 0.006 | ±64.49% | 1.28 |
-| 4 | [`@iarna/toml`](https://github.com/iarna/iarna-toml) | 120622.32 | 0.009 | ±38.42% | 1.86 |
-| 5 | [`yaml`](https://github.com/eemeli/yaml) | 14937.08 | 0.070 | ±34.48% | 15.02 |
-| 6 | [`toml`](https://github.com/BinaryMuse/toml-node) | 3457.59 | 0.299 | ±24.74% | 64.90 |
+| 1 | [`maml.js`](https://github.com/maml-dev/maml.js) | 227735.83 | 0.004 | ±45.25% | 1.00 |
+| 2 | [`js-yaml`](https://github.com/nodeca/js-yaml) | 177936.51 | 0.006 | ±45.84% | 1.28 |
+| 3 | [`ini`](https://github.com/npm/ini) | 176487.85 | 0.006 | ±33.04% | 1.29 |
+| 4 | [`@iarna/toml`](https://github.com/iarna/iarna-toml) | 117897.57 | 0.009 | ±40.15% | 1.93 |
+| 5 | [`yaml`](https://github.com/eemeli/yaml) | 14176.95 | 0.073 | ±32.52% | 16.06 |
+| 6 | [`yaml-js`](https://github.com/connec/yaml-js) | 4982.74 | 0.204 | ±18.18% | 45.70 |
+| 7 | [`toml`](https://github.com/BinaryMuse/toml-node) | 3445.70 | 0.302 | ±28.00% | 66.09 |
 ## Stringify
 | # | Package | Ops/sec | Avg time (ms) | ± % | slower x |
 | --- | --- | ---: | ---: | ---: | ---: |
-| 1 | [`maml.js`](https://github.com/maml-dev/maml.js) | 857305.86 | 0.001 | ±61.02% | 1.00 |
-| 2 | [`ini`](https://github.com/npm/ini) | 425404.76 | 0.002 | ±34.60% | 2.02 |
-| 3 | [`@iarna/toml`](https://github.com/iarna/iarna-toml) | 174323.29 | 0.006 | ±36.45% | 4.92 |
-| 4 | [`js-yaml`](https://github.com/nodeca/js-yaml) | 133677.85 | 0.008 | ±25.82% | 6.41 |
-| 5 | [`yaml`](https://github.com/eemeli/yaml) | 36655.15 | 0.028 | ±27.70% | 23.39 |
+| 1 | [`maml.js`](https://github.com/maml-dev/maml.js) | 852914.70 | 0.001 | ±55.31% | 1.00 |
+| 2 | [`ini`](https://github.com/npm/ini) | 431208.34 | 0.002 | ±69.37% | 1.98 |
+| 3 | [`@iarna/toml`](https://github.com/iarna/iarna-toml) | 175904.01 | 0.006 | ±75.73% | 4.85 |
+| 4 | [`js-yaml`](https://github.com/nodeca/js-yaml) | 135415.72 | 0.007 | ±28.26% | 6.30 |
+| 5 | [`yaml`](https://github.com/eemeli/yaml) | 36808.60 | 0.028 | ±27.08% | 23.17 |
+| 6 | [`yaml-js`](https://github.com/connec/yaml-js) | 4578.50 | 0.221 | ±17.98% | 186.29 |
