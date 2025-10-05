@@ -7,3 +7,4 @@ deno.lock
 package-cjs.json
 package-esm.json
 
+*.map
