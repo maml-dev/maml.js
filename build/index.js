@@ -11,12 +11,9 @@ function parse(source) {
     pos < source.length ? (ch = source[pos], pos++) : (ch = "", done = !0), ch === `
 ` && lineNumber++;
   }
-  function lookahead2() {
-    return source.substring(pos, pos + 2);
-  }
   function parseValue() {
     var _a, _b, _c, _d, _e, _f, _g;
-    return skipWhitespace(), (_g = (_f = (_e = (_d = (_c = (_b = (_a = parseMultilineString()) != null ? _a : parseString()) != null ? _b : parseNumber()) != null ? _c : parseObject()) != null ? _d : parseArray()) != null ? _e : parseKeyword("true", !0)) != null ? _f : parseKeyword("false", !1)) != null ? _g : parseKeyword("null", null);
+    return skipWhitespace(), (_g = (_f = (_e = (_d = (_c = (_b = (_a = parseString()) != null ? _a : parseRawString()) != null ? _b : parseNumber()) != null ? _c : parseObject()) != null ? _d : parseArray()) != null ? _e : parseKeyword("true", !0)) != null ? _f : parseKeyword("false", !1)) != null ? _g : parseKeyword("null", null);
   }
   function parseString() {
     if (ch !== '"') return;
@@ -61,39 +58,36 @@ function parse(source) {
       else {
         if (ch === '"')
           break;
-        if (ch === `
-`)
-          throw new SyntaxError(
-            errorSnippet(
-              'Use """ for multiline strings or escape newlines with "\\n"'
-            )
-          );
         if (ch < "")
-          throw new SyntaxError(
-            errorSnippet(`Unescaped control character ${JSON.stringify(ch)}`)
-          );
+          throw new SyntaxError(errorSnippet());
         str += ch;
       }
     return next(), str;
   }
-  function parseMultilineString() {
-    if (ch !== '"' || lookahead2() !== '""') return;
-    next(), next(), next();
-    let hasLeadingNewline = !1;
-    ch === `
-` && (hasLeadingNewline = !0, next());
-    let str = "";
-    for (; !done; ) {
-      if (ch === '"' && lookahead2() === '""') {
-        if (next(), next(), next(), str === "" && !hasLeadingNewline)
-          throw new SyntaxError(
-            errorSnippet("Multiline strings cannot be empty")
-          );
-        return str;
+  function parseRawString() {
+    if (ch !== "`") return;
+    let str = "", more = !1;
+    do {
+      let newline = `
+`;
+      for (; ; ) {
+        if (next(), ch === "\r")
+          if (next(), ch === `
+`) {
+            newline = `\r
+`;
+            break;
+          } else
+            str += "\r";
+        else if (ch === `
+` || done)
+          break;
+        str += ch;
       }
-      str += ch, next();
-    }
-    throw new SyntaxError(errorSnippet());
+      for (next(); isWhitespace(ch); ) next();
+      more = ch === "`", more && (str += newline);
+    } while (more);
+    return str;
   }
   function parseNumber() {
     if (!isDigit(ch) && ch !== "-") return;
@@ -188,14 +182,14 @@ function parse(source) {
       for (let i = 1; i < name.length; i++)
         if (next(), ch !== name[i])
           throw new SyntaxError(errorSnippet());
-      if (next(), isWhitespace(ch) || ch === "," || ch === "}" || ch === "]" || ch === void 0)
+      if (next(), isWhitespaceOrNewline(ch) || ch === "," || ch === "}" || ch === "]" || ch === void 0)
         return value2;
       throw new SyntaxError(errorSnippet());
     }
   }
   function skipWhitespace() {
     let hasNewline = !1;
-    for (; isWhitespace(ch); )
+    for (; isWhitespaceOrNewline(ch); )
       hasNewline || (hasNewline = ch === `
 `), next();
     let hasNewlineAfterComment = skipComment();
@@ -211,8 +205,11 @@ function parse(source) {
     return !1;
   }
   function isWhitespace(ch2) {
-    return ch2 === " " || ch2 === `
-` || ch2 === "	" || ch2 === "\r";
+    return ch2 === " " || ch2 === "	";
+  }
+  function isWhitespaceOrNewline(ch2) {
+    return ch2 === " " || ch2 === "	" || ch2 === `
+` || ch2 === "\r";
   }
   function isHexDigit(ch2) {
     return ch2 >= "0" && ch2 <= "9" || ch2 >= "A" && ch2 <= "F";

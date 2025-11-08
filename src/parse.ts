@@ -30,15 +30,11 @@ export function parse(source: string): any {
     }
   }
 
-  function lookahead2() {
-    return source.substring(pos, pos + 2)
-  }
-
   function parseValue(): any {
     skipWhitespace()
     return (
-      parseMultilineString() ??
       parseString() ??
+      parseRawString() ??
       parseNumber() ??
       parseObject() ??
       parseArray() ??
@@ -102,16 +98,8 @@ export function parse(source: string): any {
         escaped = true
       } else if (ch === '"') {
         break
-      } else if ((ch as string) === '\n') {
-        throw new SyntaxError(
-          errorSnippet(
-            `Use """ for multiline strings or escape newlines with "\\n"`,
-          ),
-        )
       } else if ((ch as string) < '\x1F') {
-        throw new SyntaxError(
-          errorSnippet(`Unescaped control character ${JSON.stringify(ch)}`),
-        )
+        throw new SyntaxError(errorSnippet())
       } else {
         str += ch
       }
@@ -120,34 +108,35 @@ export function parse(source: string): any {
     return str
   }
 
-  function parseMultilineString() {
-    if (ch !== '"' || lookahead2() !== '""') return
-    next()
-    next()
-    next()
-    let hasLeadingNewline = false
-    if ((ch as string) === '\n') {
-      hasLeadingNewline = true
-      next()
-    }
-
+  function parseRawString() {
+    if (ch !== '`') return
     let str = ''
-    while (!done) {
-      if (ch === '"' && lookahead2() === '""') {
+    let more = false
+    do {
+      let newline = '\n'
+      while (true) {
         next()
-        next()
-        next()
-        if (str === '' && !hasLeadingNewline) {
-          throw new SyntaxError(
-            errorSnippet('Multiline strings cannot be empty'),
-          )
+        if ((ch as string) === '\r') {
+          next()
+          if ((ch as string) === '\n') {
+            newline = '\r\n'
+            break
+          } else {
+            str += '\r'
+          }
+        } else if ((ch as string) === '\n' || done) {
+          break
         }
-        return str
+        str += ch
       }
-      str += ch
       next()
-    }
-    throw new SyntaxError(errorSnippet())
+      while (isWhitespace(ch)) next()
+      more = (ch as string) === '`'
+      if (more) {
+        str += newline
+      }
+    } while (more)
+    return str
   }
 
   function parseNumber() {
@@ -309,7 +298,7 @@ export function parse(source: string): any {
     }
     next()
     if (
-      isWhitespace(ch) ||
+      isWhitespaceOrNewline(ch) ||
       ch === ',' ||
       ch === '}' ||
       ch === ']' ||
@@ -322,7 +311,7 @@ export function parse(source: string): any {
 
   function skipWhitespace(): boolean {
     let hasNewline = false
-    while (isWhitespace(ch)) {
+    while (isWhitespaceOrNewline(ch)) {
       hasNewline ||= ch === '\n'
       next()
     }
@@ -341,7 +330,11 @@ export function parse(source: string): any {
   }
 
   function isWhitespace(ch: string) {
-    return ch === ' ' || ch === '\n' || ch === '\t' || ch === '\r'
+    return ch === ' ' || ch === '\t'
+  }
+
+  function isWhitespaceOrNewline(ch: string) {
+    return ch === ' ' || ch === '\t' || ch === '\n' || ch === '\r'
   }
 
   function isHexDigit(ch: string) {

@@ -17,9 +17,18 @@ Unexpected end of input on line 1.
 === unterminated string
 "Hello
 ---
-Use """ for multiline strings or escape newlines with "\n" on line 1.
+Unexpected character "\n" on line 1.
 
     "Hello
+    ......^
+
+=== newline in string literal
+"line1
+line2"
+---
+Unexpected character "\n" on line 1.
+
+    "line1
     ......^
 
 === backslash at end of string
@@ -85,15 +94,6 @@ Invalid escape sequence (out of range) on line 1.
 
     "\u{110000}"
     ..........^
-
-=== newline in string literal
-"line1
-line2"
----
-Use """ for multiline strings or escape newlines with "\n" on line 1.
-
-    "line1
-    ......^
 
 === multiple values in a single document
 {}[]
@@ -478,23 +478,6 @@ Unexpected character "1" on line 1.
 
     [{a 1}]
     ....^
-
-=== multiline string without closing
-"""
-foo
----
-Unexpected end of input on line 2.
-
-    foo
-    ...^
-
-=== empty multiline single-line
-""""""
----
-Multiline strings cannot be empty on line 1.
-
-    """"""
-    ......^
 
 === duplicate keys
 {

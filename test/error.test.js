@@ -22,6 +22,6 @@ describe('error', () => {
   })
 
   test('unescaped \u0000 inside string', () => {
-    expect(() => parse('"\u0000"')).toThrow('Unescaped control character "\\u0000"')
+    expect(() => parse('"\u0000"')).toThrow('Unexpected character "\\u0000"')
   })
 })
