@@ -81,16 +81,8 @@ function parse(source) {
       else {
         if (ch === '"')
           break;
-        if (ch === "\n")
-          throw new SyntaxError(
-            errorSnippet(
-              'Use """ for multiline strings or escape newlines with "\\n"'
-            )
-          );
         if (ch < "")
-          throw new SyntaxError(
-            errorSnippet("Unescaped control character ".concat(JSON.stringify(ch)))
-          );
+          throw new SyntaxError(errorSnippet());
         str += ch;
       }
     return next(), str;

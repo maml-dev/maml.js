@@ -98,16 +98,8 @@ export function parse(source: string): any {
         escaped = true
       } else if (ch === '"') {
         break
-      } else if ((ch as string) === '\n') {
-        throw new SyntaxError(
-          errorSnippet(
-            `Use """ for multiline strings or escape newlines with "\\n"`,
-          ),
-        )
       } else if ((ch as string) < '\x1F') {
-        throw new SyntaxError(
-          errorSnippet(`Unescaped control character ${JSON.stringify(ch)}`),
-        )
+        throw new SyntaxError(errorSnippet())
       } else {
         str += ch
       }
@@ -118,7 +110,8 @@ export function parse(source: string): any {
 
   function parseRawString() {
     if (ch !== '`') return
-    let str = '', more = false
+    let str = '',
+      more = false
     do {
       while (true) {
         next()
@@ -129,7 +122,7 @@ export function parse(source: string): any {
       while (isWhitespace(ch)) next()
       more = (ch as string) === '`'
       if (more) str += '\n'
-    } while(more)
+    } while (more)
     return str
   }
 
