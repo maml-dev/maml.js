@@ -35,8 +35,8 @@ function parse(source) {
     pos < source.length ? (ch = source[pos], pos++) : (ch = "", done = !0), ch === "\n" && lineNumber++;
   }
   function parseValue() {
-    var _a, _b, _c, _d, _e, _f;
-    return skipWhitespace(), (_f = (_e = (_d = (_c = (_b = (_a = parseString()) != null ? _a : parseNumber()) != null ? _b : parseObject()) != null ? _c : parseArray()) != null ? _d : parseKeyword("true", !0)) != null ? _e : parseKeyword("false", !1)) != null ? _f : parseKeyword("null", null);
+    var _a, _b, _c, _d, _e, _f, _g;
+    return skipWhitespace(), (_g = (_f = (_e = (_d = (_c = (_b = (_a = parseString()) != null ? _a : parseRawString()) != null ? _b : parseNumber()) != null ? _c : parseObject()) != null ? _d : parseArray()) != null ? _e : parseKeyword("true", !0)) != null ? _f : parseKeyword("false", !1)) != null ? _g : parseKeyword("null", null);
   }
   function parseString() {
     if (ch !== '"') return;
@@ -94,6 +94,17 @@ function parse(source) {
         str += ch;
       }
     return next(), str;
+  }
+  function parseRawString() {
+    if (ch !== "`") return;
+    let str = "", more = !1;
+    do {
+      for (; next(), !(ch === "\n" || done); )
+        str += ch;
+      for (next(); isWhitespace(ch); ) next();
+      more = ch === "`", more && (str += "\n");
+    } while (more);
+    return str;
   }
   function parseNumber() {
     if (!isDigit(ch) && ch !== "-") return;
@@ -188,14 +199,14 @@ function parse(source) {
       for (let i = 1; i < name.length; i++)
         if (next(), ch !== name[i])
           throw new SyntaxError(errorSnippet());
-      if (next(), isWhitespace(ch) || ch === "," || ch === "}" || ch === "]" || ch === void 0)
+      if (next(), isWhitespaceOrNewline(ch) || ch === "," || ch === "}" || ch === "]" || ch === void 0)
         return value2;
       throw new SyntaxError(errorSnippet());
     }
   }
   function skipWhitespace() {
     let hasNewline = !1;
-    for (; isWhitespace(ch); )
+    for (; isWhitespaceOrNewline(ch); )
       hasNewline || (hasNewline = ch === "\n"), next();
     let hasNewlineAfterComment = skipComment();
     return hasNewline || hasNewlineAfterComment;
@@ -209,7 +220,10 @@ function parse(source) {
     return !1;
   }
   function isWhitespace(ch2) {
-    return ch2 === " " || ch2 === "\n" || ch2 === "	" || ch2 === "\r";
+    return ch2 === " " || ch2 === "	";
+  }
+  function isWhitespaceOrNewline(ch2) {
+    return ch2 === " " || ch2 === "	" || ch2 === "\n" || ch2 === "\r";
   }
   function isHexDigit(ch2) {
     return ch2 >= "0" && ch2 <= "9" || ch2 >= "A" && ch2 <= "F";

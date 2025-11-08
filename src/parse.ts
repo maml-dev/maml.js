@@ -34,6 +34,7 @@ export function parse(source: string): any {
     skipWhitespace()
     return (
       parseString() ??
+      parseRawString() ??
       parseNumber() ??
       parseObject() ??
       parseArray() ??
@@ -112,6 +113,23 @@ export function parse(source: string): any {
       }
     }
     next()
+    return str
+  }
+
+  function parseRawString() {
+    if (ch !== '`') return
+    let str = '', more = false
+    do {
+      while (true) {
+        next()
+        if ((ch as string) === '\n' || done) break
+        str += ch
+      }
+      next()
+      while (isWhitespace(ch)) next()
+      more = (ch as string) === '`'
+      if (more) str += '\n'
+    } while(more)
     return str
   }
 
@@ -274,7 +292,7 @@ export function parse(source: string): any {
     }
     next()
     if (
-      isWhitespace(ch) ||
+      isWhitespaceOrNewline(ch) ||
       ch === ',' ||
       ch === '}' ||
       ch === ']' ||
@@ -287,7 +305,7 @@ export function parse(source: string): any {
 
   function skipWhitespace(): boolean {
     let hasNewline = false
-    while (isWhitespace(ch)) {
+    while (isWhitespaceOrNewline(ch)) {
       hasNewline ||= ch === '\n'
       next()
     }
@@ -306,7 +324,11 @@ export function parse(source: string): any {
   }
 
   function isWhitespace(ch: string) {
-    return ch === ' ' || ch === '\n' || ch === '\t' || ch === '\r'
+    return ch === ' ' || ch === '\t'
+  }
+
+  function isWhitespaceOrNewline(ch: string) {
+    return ch === ' ' || ch === '\t' || ch === '\n' || ch === '\r'
   }
 
   function isHexDigit(ch: string) {

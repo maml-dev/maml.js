@@ -47,7 +47,9 @@ describe('parse', () => {
       expect(parse(input)).toStrictEqual(JSON.parse(expected))
     })
   }
+})
 
+describe('extra', () => {
   test('bigint', () => {
     const output = parse(`9007199254740992`) // Number.MAX_SAFE_INTEGER + 1
     expect(output).toStrictEqual(9007199254740992n)
@@ -56,5 +58,15 @@ describe('parse', () => {
   test('maml in global', async () => {
     await import('../build/maml.min.js')
     expect('MAML' in globalThis).toBeTruthy()
+  })
+
+  test('empty raw string', () => {
+    const output = parse('`')
+    expect(output).toStrictEqual('')
+  })
+
+  test('single-space raw string', () => {
+    const output = parse('` ')
+    expect(output).toStrictEqual(' ')
   })
 })

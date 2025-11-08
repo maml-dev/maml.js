@@ -812,11 +812,6 @@ false
 ---
 ""
 
-=== single-space raw string
-`
----
-" "
-
 === Windows-style path, backslashes preserved
 `C:\Temp\new_folder\file.txt
 ---
@@ -825,7 +820,7 @@ false
 === emoji and UTF-8 content
 `😀 😁 😂
 `Привет мир
-مرحبا بالعالم`
+`مرحبا بالعالم
 `
 ---
 "😀 😁 😂\nПривет мир\nمرحبا بالعالم\n"
@@ -836,7 +831,7 @@ false
   `b
 
   `c
-  `b
+  `d
 ]
 ---
 ["a\nb","c\nd"]
@@ -847,7 +842,7 @@ false
   `b
 ,
   `c
-  `b
+  `d
 ]
 ---
 ["a\nb","c\nd"]
