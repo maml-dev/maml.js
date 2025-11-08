@@ -599,6 +599,14 @@ false
 ---
 {"a-b":1,"a b":2,"a:b":3,"a,b":4}
 
+=== object with special keys
+{
+  toString: 1
+  length: 2
+}
+---
+{"toString": 1, "length": 2}
+
 === unicode values with newline separators
 {
   "text": "Привет"
@@ -758,133 +766,99 @@ false
 ---
 {"alpha":1,"beta":2,"gamma":3}
 
-=== multiline basic
-"""
-The quick brown
-fox jumps over
-the lazy dog.
-"""
----
-"The quick brown\nfox jumps over\nthe lazy dog.\n"
-
-=== multiline no trailing newline
-"""
-The quick brown
-fox jumps over
-the lazy dog."""
+=== raw string basic
+`The quick brown
+`fox jumps over
+`the lazy dog.
 ---
 "The quick brown\nfox jumps over\nthe lazy dog."
 
-=== leading spaces on first line are preserved
-"""
-  indented first line
-second line
-"""
+=== raw string with trailing newline
+`The quick brown
+`fox jumps over
+`the lazy dog.
+`
 ---
-"  indented first line\nsecond line\n"
+"The quick brown\nfox jumps over\nthe lazy dog.\n"
 
-=== whitespace preserved exactly (matches your example)
+=== single line raw string
+`Hello, world!
+---
+"Hello, world!"
+
+=== raw string in an object
 {
-  key: """
-    Roses are red,
-    Violets are blue;
-  """
+  key:
+    `Roses are red
+    `Violets are blue
 }
 ---
-{"key":"    Roses are red,\n    Violets are blue;\n  "}
+{"key":"Roses are red\nViolets are blue"}
 
 === escape sequences are literal (no interpretation)
-"""
-There is no escaping, so \n, \t, \u{0022} stay as-is.
-"""
+`There is no escaping, so \n, \t, \u{0022} stay as-is.
 ---
-"There is no escaping, so \\n, \\t, \\u{0022} stay as-is.\n"
+"There is no escaping, so \\n, \\t, \\u{0022} stay as-is."
 
 === hash signs inside are content (not comments)
-"""
-# this is not a comment
-still content
-"""
----
-"# this is not a comment\nstill content\n"
+`# this is not a comment
+`still content
 
-=== allow one or two quotes inside (not three)
-"""
-He said ""hi"" and "ok".
-"""
 ---
-"He said \"\"hi\"\" and \"ok\".\n"
+"# this is not a comment\nstill content"
 
-=== single-line multiline
-"""A multiline string with "quotes" and '' inside."""
----
-"A multiline string with \"quotes\" and '' inside."
-
-=== empty multiline -> empty string
-"""
-"""
+=== empty raw string
+`
 ---
 ""
 
-=== single-space single-line multiline
-""" """
+=== single-space raw string
+`
 ---
 " "
 
 === Windows-style path, backslashes preserved
-"""
-C:\Temp\new_folder\file.txt
-"""
+`C:\Temp\new_folder\file.txt
 ---
-"C:\\Temp\\new_folder\\file.txt\n"
+"C:\\Temp\\new_folder\\file.txt"
 
 === emoji and UTF-8 content
-"""
-😀 😁 😂
-Привет мир
-مرحبا بالعالم
-"""
+`😀 😁 😂
+`Привет мир
+مرحبا بالعالم`
+`
 ---
 "😀 😁 😂\nПривет мир\nمرحبا بالعالم\n"
 
-=== array of multiline strings (newline as separators, no commas)
+=== array of raw strings (newline as separators)
 [
-  """
-a
-b
-"""
-  """
-c
-d"""
+  `a
+  `b
+
+  `c
+  `b
 ]
 ---
-["a\nb\n","c\nd"]
+["a\nb","c\nd"]
 
-=== preserve interior blank lines
-"""
-top
+=== array of raw strings (comma as separators)
+[
+  `a
+  `b
+,
+  `c
+  `b
+]
+---
+["a\nb","c\nd"]
 
-middle
-
-bottom
-"""
+=== raw string with inner blank lines
+`top
+`
+`middle
+`
+`bottom
+`
 ---
 "top\n\nmiddle\n\nbottom\n"
 
-=== mix with comments and trailing comma (comments outside the string)
-{
-  poem: """
-Roses are red,
-Violets are blue.
-""" # keep poem
-}
----
-{"poem":"Roses are red,\nViolets are blue.\n"}
-
-=== object with special keys
-{
-  toString: 1
-  length: 2
-}
----
-{"toString": 1, "length": 2}

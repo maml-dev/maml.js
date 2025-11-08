@@ -34,12 +34,9 @@ function parse(source) {
   function next() {
     pos < source.length ? (ch = source[pos], pos++) : (ch = "", done = !0), ch === "\n" && lineNumber++;
   }
-  function lookahead2() {
-    return source.substring(pos, pos + 2);
-  }
   function parseValue() {
-    var _a, _b, _c, _d, _e, _f, _g;
-    return skipWhitespace(), (_g = (_f = (_e = (_d = (_c = (_b = (_a = parseMultilineString()) != null ? _a : parseString()) != null ? _b : parseNumber()) != null ? _c : parseObject()) != null ? _d : parseArray()) != null ? _e : parseKeyword("true", !0)) != null ? _f : parseKeyword("false", !1)) != null ? _g : parseKeyword("null", null);
+    var _a, _b, _c, _d, _e, _f;
+    return skipWhitespace(), (_f = (_e = (_d = (_c = (_b = (_a = parseString()) != null ? _a : parseNumber()) != null ? _b : parseObject()) != null ? _c : parseArray()) != null ? _d : parseKeyword("true", !0)) != null ? _e : parseKeyword("false", !1)) != null ? _f : parseKeyword("null", null);
   }
   function parseString() {
     if (ch !== '"') return;
@@ -97,24 +94,6 @@ function parse(source) {
         str += ch;
       }
     return next(), str;
-  }
-  function parseMultilineString() {
-    if (ch !== '"' || lookahead2() !== '""') return;
-    next(), next(), next();
-    let hasLeadingNewline = !1;
-    ch === "\n" && (hasLeadingNewline = !0, next());
-    let str = "";
-    for (; !done; ) {
-      if (ch === '"' && lookahead2() === '""') {
-        if (next(), next(), next(), str === "" && !hasLeadingNewline)
-          throw new SyntaxError(
-            errorSnippet("Multiline strings cannot be empty")
-          );
-        return str;
-      }
-      str += ch, next();
-    }
-    throw new SyntaxError(errorSnippet());
   }
   function parseNumber() {
     if (!isDigit(ch) && ch !== "-") return;

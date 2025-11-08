@@ -30,14 +30,9 @@ export function parse(source: string): any {
     }
   }
 
-  function lookahead2() {
-    return source.substring(pos, pos + 2)
-  }
-
   function parseValue(): any {
     skipWhitespace()
     return (
-      parseMultilineString() ??
       parseString() ??
       parseNumber() ??
       parseObject() ??
@@ -118,36 +113,6 @@ export function parse(source: string): any {
     }
     next()
     return str
-  }
-
-  function parseMultilineString() {
-    if (ch !== '"' || lookahead2() !== '""') return
-    next()
-    next()
-    next()
-    let hasLeadingNewline = false
-    if ((ch as string) === '\n') {
-      hasLeadingNewline = true
-      next()
-    }
-
-    let str = ''
-    while (!done) {
-      if (ch === '"' && lookahead2() === '""') {
-        next()
-        next()
-        next()
-        if (str === '' && !hasLeadingNewline) {
-          throw new SyntaxError(
-            errorSnippet('Multiline strings cannot be empty'),
-          )
-        }
-        return str
-      }
-      str += ch
-      next()
-    }
-    throw new SyntaxError(errorSnippet())
   }
 
   function parseNumber() {

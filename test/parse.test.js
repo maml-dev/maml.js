@@ -33,10 +33,9 @@ test('example', () => {
     }    
   ]
 
-  notes: """
-This is a multiline strings.
-Keeps formatting as-is.
-"""
+  notes:
+    \`This is a multiline strings.
+    \`Keeps formatting as-is.
 }
   `)
 })
