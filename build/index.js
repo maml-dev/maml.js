@@ -68,12 +68,24 @@ function parse(source) {
     if (ch !== "`") return;
     let str = "", more = !1;
     do {
-      for (; next(), !(ch === `
-` || done); )
+      let newline = `
+`;
+      for (; ; ) {
+        if (next(), ch === "\r")
+          if (next(), ch === `
+`) {
+            newline = `\r
+`;
+            break;
+          } else
+            str += "\r";
+        else if (ch === `
+` || done)
+          break;
         str += ch;
+      }
       for (next(); isWhitespace(ch); ) next();
-      more = ch === "`", more && (str += `
-`);
+      more = ch === "`", more && (str += newline);
     } while (more);
     return str;
   }

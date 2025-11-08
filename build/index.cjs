@@ -91,10 +91,20 @@ function parse(source) {
     if (ch !== "`") return;
     let str = "", more = !1;
     do {
-      for (; next(), !(ch === "\n" || done); )
+      let newline = "\n";
+      for (; ; ) {
+        if (next(), ch === "\r")
+          if (next(), ch === "\n") {
+            newline = "\r\n";
+            break;
+          } else
+            str += "\r";
+        else if (ch === "\n" || done)
+          break;
         str += ch;
+      }
       for (next(); isWhitespace(ch); ) next();
-      more = ch === "`", more && (str += "\n");
+      more = ch === "`", more && (str += newline);
     } while (more);
     return str;
   }

@@ -110,18 +110,31 @@ export function parse(source: string): any {
 
   function parseRawString() {
     if (ch !== '`') return
-    let str = '',
-      more = false
+    let str = ''
+    let more = false
     do {
+      let newline = '\n'
       while (true) {
         next()
-        if ((ch as string) === '\n' || done) break
+        if ((ch as string) === '\r') {
+          next()
+          if ((ch as string) === '\n') {
+            newline = '\r\n'
+            break
+          } else {
+            str += '\r'
+          }
+        } else if ((ch as string) === '\n' || done) {
+          break
+        }
         str += ch
       }
       next()
       while (isWhitespace(ch)) next()
       more = (ch as string) === '`'
-      if (more) str += '\n'
+      if (more) {
+        str += newline
+      }
     } while (more)
     return str
   }
