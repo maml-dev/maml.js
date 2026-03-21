@@ -403,7 +403,7 @@ false
 ---
 {"inner":{"list":[1,2]}}
 
-=== trailing comma after multiline string with comment
+=== trailing comma after raw string with comment
 {
   "text": "Line1\nLine2", # trailing
 }
@@ -767,7 +767,7 @@ false
 ---
 {"alpha":1,"beta":2,"gamma":3}
 
-=== multiline basic
+=== raw string basic
 """
 The quick brown
 fox jumps over
@@ -776,7 +776,7 @@ the lazy dog.
 ---
 "The quick brown\nfox jumps over\nthe lazy dog.\n"
 
-=== multiline no trailing newline
+=== raw string no trailing newline
 """
 The quick brown
 fox jumps over
@@ -824,18 +824,18 @@ He said ""hi"" and "ok".
 ---
 "He said \"\"hi\"\" and \"ok\".\n"
 
-=== single-line multiline
-"""A multiline string with "quotes" and '' inside."""
+=== single-line raw string
+"""A raw string with "quotes" and '' inside."""
 ---
-"A multiline string with \"quotes\" and '' inside."
+"A raw string with \"quotes\" and '' inside."
 
-=== empty multiline -> empty string
+=== empty raw string -> empty string
 """
 """
 ---
 ""
 
-=== single-space single-line multiline
+=== single-space single-line raw string
 """ """
 ---
 " "
@@ -856,7 +856,7 @@ C:\Temp\new_folder\file.txt
 ---
 "😀 😁 😂\nПривет мир\nمرحبا بالعالم\n"
 
-=== array of multiline strings (newline as separators, no commas)
+=== array of raw strings (newline as separators, no commas)
 [
   """
 a

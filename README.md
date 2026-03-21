@@ -38,7 +38,7 @@ const data = parse(`{
   }
 
   notes: """
-This is a multiline string.
+This is a raw multiline string.
 Keeps formatting as‑is.
 """
 }`)

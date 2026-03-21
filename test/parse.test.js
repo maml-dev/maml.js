@@ -34,7 +34,7 @@ test('example', () => {
   ]
 
   notes: """
-This is a multiline strings.
+This is a raw multiline strings.
 Keeps formatting as-is.
 """
 }

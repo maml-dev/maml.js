@@ -34,7 +34,7 @@ const obj = {
       }
     }
   ],
-  "notes": "This is a multiline strings.\nKeeps formatting as-is.\n"
+  "notes": "This is a raw multiline strings.\nKeeps formatting as-is.\n"
 }
 
 const yaml = YAML.stringify(obj)

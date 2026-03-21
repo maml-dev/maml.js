@@ -16,7 +16,7 @@ function parse(source) {
   }
   function parseValue() {
     var _a, _b, _c, _d, _e, _f, _g;
-    return skipWhitespace(), (_g = (_f = (_e = (_d = (_c = (_b = (_a = parseMultilineString()) != null ? _a : parseString()) != null ? _b : parseNumber()) != null ? _c : parseObject()) != null ? _d : parseArray()) != null ? _e : parseKeyword("true", !0)) != null ? _f : parseKeyword("false", !1)) != null ? _g : parseKeyword("null", null);
+    return skipWhitespace(), (_g = (_f = (_e = (_d = (_c = (_b = (_a = parseRawString()) != null ? _a : parseString()) != null ? _b : parseNumber()) != null ? _c : parseObject()) != null ? _d : parseArray()) != null ? _e : parseKeyword("true", !0)) != null ? _f : parseKeyword("false", !1)) != null ? _g : parseKeyword("null", null);
   }
   function parseString() {
     if (ch !== '"') return;
@@ -63,18 +63,14 @@ function parse(source) {
           break;
         if (ch === `
 `)
-          throw new SyntaxError(
-            errorSnippet(
-              'Use """ for multiline strings or escape newlines with "\\n"'
-            )
-          );
+          throw new SyntaxError(errorSnippet());
         if (ch < "")
           throw new SyntaxError(errorSnippet());
         str += ch;
       }
     return next(), str;
   }
-  function parseMultilineString() {
+  function parseRawString() {
     if (ch !== '"' || lookahead2() !== '""') return;
     next(), next(), next();
     let hasLeadingNewline = !1;
@@ -84,9 +80,7 @@ function parse(source) {
     for (; !done; ) {
       if (ch === '"' && lookahead2() === '""') {
         if (next(), next(), next(), str === "" && !hasLeadingNewline)
-          throw new SyntaxError(
-            errorSnippet("Multiline strings cannot be empty")
-          );
+          throw new SyntaxError(errorSnippet("Raw strings cannot be empty"));
         return str;
       }
       str += ch, next();

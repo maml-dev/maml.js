@@ -17,7 +17,7 @@ Unexpected end of input on line 1.
 === unterminated string
 "Hello
 ---
-Use """ for multiline strings or escape newlines with "\n" on line 1.
+Unexpected character "\n" on line 1.
 
     "Hello
     ......^
@@ -26,7 +26,7 @@ Use """ for multiline strings or escape newlines with "\n" on line 1.
 "line1
 line2"
 ---
-Use """ for multiline strings or escape newlines with "\n" on line 1.
+Unexpected character "\n" on line 1.
 
     "line1
     ......^
@@ -100,7 +100,7 @@ Invalid escape sequence (out of range) on line 1.
 "line1
 line2"
 ---
-Use """ for multiline strings or escape newlines with "\n" on line 1.
+Unexpected character "\n" on line 1.
 
     "line1
     ......^
@@ -489,7 +489,7 @@ Unexpected character "1" on line 1.
     [{a 1}]
     ....^
 
-=== multiline string without closing
+=== raw string without closing
 """
 foo
 ---
@@ -498,10 +498,10 @@ Unexpected end of input on line 2.
     foo
     ...^
 
-=== empty multiline single-line
+=== empty raw single-line
 """"""
 ---
-Multiline strings cannot be empty on line 1.
+Raw strings cannot be empty on line 1.
 
     """"""
     ......^

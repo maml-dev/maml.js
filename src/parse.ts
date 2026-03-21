@@ -37,7 +37,7 @@ export function parse(source: string): any {
   function parseValue(): any {
     skipWhitespace()
     return (
-      parseMultilineString() ??
+      parseRawString() ??
       parseString() ??
       parseNumber() ??
       parseObject() ??
@@ -103,11 +103,7 @@ export function parse(source: string): any {
       } else if (ch === '"') {
         break
       } else if ((ch as string) === '\n') {
-        throw new SyntaxError(
-          errorSnippet(
-            `Use """ for multiline strings or escape newlines with "\\n"`,
-          ),
-        )
+        throw new SyntaxError(errorSnippet())
       } else if ((ch as string) < '\x1F') {
         throw new SyntaxError(errorSnippet())
       } else {
@@ -118,7 +114,7 @@ export function parse(source: string): any {
     return str
   }
 
-  function parseMultilineString() {
+  function parseRawString() {
     if (ch !== '"' || lookahead2() !== '""') return
     next()
     next()
@@ -136,9 +132,7 @@ export function parse(source: string): any {
         next()
         next()
         if (str === '' && !hasLeadingNewline) {
-          throw new SyntaxError(
-            errorSnippet('Multiline strings cannot be empty'),
-          )
+          throw new SyntaxError(errorSnippet('Raw strings cannot be empty'))
         }
         return str
       }
