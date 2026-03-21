@@ -30,8 +30,8 @@ export function parse(source: string): any {
     }
   }
 
-  function lookahead2() {
-    return source.substring(pos, pos + 2)
+  function lookahead(n: number) {
+    return source.substring(pos, pos + n)
   }
 
   function parseValue(): any {
@@ -115,11 +115,14 @@ export function parse(source: string): any {
   }
 
   function parseRawString() {
-    if (ch !== '"' || lookahead2() !== '""') return
+    if (ch !== '"' || lookahead(2) !== '""') return
     next()
     next()
     next()
     let hasLeadingNewline = false
+    if ((ch as string) === '\r' && lookahead(1) === '\n') {
+      next()
+    }
     if ((ch as string) === '\n') {
       hasLeadingNewline = true
       next()
@@ -127,7 +130,7 @@ export function parse(source: string): any {
 
     let str = ''
     while (!done) {
-      if (ch === '"' && lookahead2() === '""') {
+      if (ch === '"' && lookahead(2) === '""') {
         next()
         next()
         next()

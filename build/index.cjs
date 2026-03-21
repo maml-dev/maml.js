@@ -34,8 +34,8 @@ function parse(source) {
   function next() {
     pos < source.length ? (ch = source[pos], pos++) : (ch = "", done = !0), ch === "\n" && lineNumber++;
   }
-  function lookahead2() {
-    return source.substring(pos, pos + 2);
+  function lookahead(n) {
+    return source.substring(pos, pos + n);
   }
   function parseValue() {
     var _a, _b, _c, _d, _e, _f, _g;
@@ -93,13 +93,13 @@ function parse(source) {
     return next(), str;
   }
   function parseRawString() {
-    if (ch !== '"' || lookahead2() !== '""') return;
+    if (ch !== '"' || lookahead(2) !== '""') return;
     next(), next(), next();
     let hasLeadingNewline = !1;
-    ch === "\n" && (hasLeadingNewline = !0, next());
+    ch === "\r" && lookahead(1) === "\n" && next(), ch === "\n" && (hasLeadingNewline = !0, next());
     let str = "";
     for (; !done; ) {
-      if (ch === '"' && lookahead2() === '""') {
+      if (ch === '"' && lookahead(2) === '""') {
         if (next(), next(), next(), str === "" && !hasLeadingNewline)
           throw new SyntaxError(errorSnippet("Raw strings cannot be empty"));
         return str;

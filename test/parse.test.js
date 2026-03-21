@@ -90,4 +90,9 @@ describe('extra', () => {
     const output = parse('"""\r\nstring\r\n"""')
     expect(output).toStrictEqual('string\r\n')
   })
+
+  test('raw string with leading CR', () => {
+    const output = parse('"""\rstring\r\n"""')
+    expect(output).toStrictEqual('\rstring\r\n')
+  })
 })
