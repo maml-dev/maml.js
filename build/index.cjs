@@ -8,8 +8,8 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: !0 });
 }, __copyProps = (to, from, except, desc) => {
   if (from && typeof from == "object" || typeof from == "function")
-    for (var keys = __getOwnPropNames(from), i = 0, n = keys.length, key; i < n; i++)
-      key = keys[i], !__hasOwnProp.call(to, key) && key !== except && __defProp(to, key, { get: ((k) => from[k]).bind(null, key), enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+    for (let key of __getOwnPropNames(from))
+      !__hasOwnProp.call(to, key) && key !== except && __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
   return to;
 };
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: !0 }), mod);
@@ -32,7 +32,8 @@ function parse(source) {
     throw new SyntaxError(errorSnippet());
   return expectValue(value), value;
   function next() {
-    pos < source.length ? (ch = source[pos], pos++) : (ch = "", done = !0), ch === "\n" && lineNumber++;
+    pos < source.length ? (ch = source[pos], pos++) : (ch = "", done = !0), ch === `
+` && lineNumber++;
   }
   function lookahead(n) {
     return source.substring(pos, pos + n);
@@ -84,7 +85,8 @@ function parse(source) {
       else {
         if (ch === '"')
           break;
-        if (ch === "\n")
+        if (ch === `
+`)
           throw new SyntaxError(errorSnippet());
         if (ch < "")
           throw new SyntaxError(errorSnippet());
@@ -96,7 +98,9 @@ function parse(source) {
     if (ch !== '"' || lookahead(2) !== '""') return;
     next(), next(), next();
     let hasLeadingNewline = !1;
-    ch === "\r" && lookahead(1) === "\n" && next(), ch === "\n" && (hasLeadingNewline = !0, next());
+    ch === "\r" && lookahead(1) === `
+` && next(), ch === `
+` && (hasLeadingNewline = !0, next());
     let str = "";
     for (; !done; ) {
       if (ch === '"' && lookahead(2) === '""') {
@@ -142,7 +146,7 @@ function parse(source) {
       let keyPos = pos, key;
       if (ch === '"' ? key = parseString() : key = parseKey(), Object.prototype.hasOwnProperty.call(obj, key))
         throw pos = keyPos, new SyntaxError(
-          errorSnippet("Duplicate key ".concat(JSON.stringify(key)))
+          errorSnippet(`Duplicate key ${JSON.stringify(key)}`)
         );
       if (skipWhitespace(), ch !== ":")
         throw new SyntaxError(errorSnippet());
@@ -209,20 +213,23 @@ function parse(source) {
   function skipWhitespace() {
     let hasNewline = !1;
     for (; isWhitespace(ch); )
-      hasNewline || (hasNewline = ch === "\n"), next();
+      hasNewline || (hasNewline = ch === `
+`), next();
     let hasNewlineAfterComment = skipComment();
     return hasNewline || hasNewlineAfterComment;
   }
   function skipComment() {
     if (ch === "#") {
-      for (; !done && ch !== "\n"; )
+      for (; !done && ch !== `
+`; )
         next();
       return skipWhitespace();
     }
     return !1;
   }
   function isWhitespace(ch2) {
-    return ch2 === " " || ch2 === "\n" || ch2 === "	" || ch2 === "\r";
+    return ch2 === " " || ch2 === `
+` || ch2 === "	" || ch2 === "\r";
   }
   function isHexDigit(ch2) {
     return ch2 >= "0" && ch2 <= "9" || ch2 >= "A" && ch2 <= "F";
@@ -242,18 +249,25 @@ function parse(source) {
     if (value2 === void 0)
       throw new SyntaxError(errorSnippet());
   }
-  function errorSnippet(message = "Unexpected character ".concat(JSON.stringify(ch))) {
+  function errorSnippet(message = `Unexpected character ${JSON.stringify(ch)}`) {
     ch || (message = "Unexpected end of input");
-    let lines = source.substring(pos - 40, pos).split("\n"), lastLine = lines.at(-1) || "", postfix = source.substring(pos, pos + 40).split("\n", 1).at(0) || "";
+    let lines = source.substring(pos - 40, pos).split(`
+`), lastLine = lines.at(-1) || "", postfix = source.substring(pos, pos + 40).split(`
+`, 1).at(0) || "";
     lastLine === "" && (lastLine = lines.at(-2) || "", lastLine += " ", lineNumber--, postfix = "");
-    let snippet = "    ".concat(lastLine).concat(postfix, "\n"), pointer = "    ".concat(".".repeat(Math.max(0, lastLine.length - 1)), "^\n");
-    return "".concat(message, " on line ").concat(lineNumber, ".\n\n").concat(snippet).concat(pointer);
+    let snippet = `    ${lastLine}${postfix}
+`, pointer = `    ${".".repeat(Math.max(0, lastLine.length - 1))}^
+`;
+    return `${message} on line ${lineNumber}.
+
+${snippet}${pointer}`;
   }
 }
 var escapeMap = {
   '"': '"',
   "\\": "\\",
-  n: "\n",
+  n: `
+`,
   r: "\r",
   t: "	"
 }, errorMap = {
@@ -272,31 +286,37 @@ function doStringify(value, level) {
     case "boolean":
     case "bigint":
     case "number":
-      return "".concat(value);
+      return `${value}`;
     case "null":
     case "undefined":
       return "null";
     case "array": {
       let len = value.length;
       if (len === 0) return "[]";
-      let childIndent = getIndent(level + 1), parentIndent = getIndent(level), out = "[\n";
+      let childIndent = getIndent(level + 1), parentIndent = getIndent(level), out = `[
+`;
       for (let i = 0; i < len; i++)
-        i > 0 && (out += "\n"), out += childIndent + doStringify(value[i], level + 1);
-      return out + "\n" + parentIndent + "]";
+        i > 0 && (out += `
+`), out += childIndent + doStringify(value[i], level + 1);
+      return out + `
+` + parentIndent + "]";
     }
     case "object": {
       let keys = Object.keys(value), len = keys.length;
       if (len === 0) return "{}";
-      let childIndent = getIndent(level + 1), parentIndent = getIndent(level), out = "{\n";
+      let childIndent = getIndent(level + 1), parentIndent = getIndent(level), out = `{
+`;
       for (let i = 0; i < len; i++) {
-        i > 0 && (out += "\n");
+        i > 0 && (out += `
+`);
         let key = keys[i];
         out += childIndent + doKeyStringify(key) + ": " + doStringify(value[key], level + 1);
       }
-      return out + "\n" + parentIndent + "}";
+      return out + `
+` + parentIndent + "}";
     }
     default:
-      throw new Error("Unsupported value type: ".concat(kind));
+      throw new Error(`Unsupported value type: ${kind}`);
   }
 }
 var KEY_RE = /^[A-Za-z0-9_-]+$/;
