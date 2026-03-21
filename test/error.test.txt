@@ -517,6 +517,54 @@ Duplicate key "foo" on line 3.
       foo: 2
     ..^
 
+=== case-sensitive: True is not a keyword
+True
+---
+Unexpected character "T" on line 1.
+
+    True
+    ^
+
+=== case-sensitive: TRUE is not a keyword
+TRUE
+---
+Unexpected character "T" on line 1.
+
+    TRUE
+    ^
+
+=== case-sensitive: False is not a keyword
+False
+---
+Unexpected character "F" on line 1.
+
+    False
+    ^
+
+=== case-sensitive: FALSE is not a keyword
+FALSE
+---
+Unexpected character "F" on line 1.
+
+    FALSE
+    ^
+
+=== case-sensitive: Null is not a keyword
+Null
+---
+Unexpected character "N" on line 1.
+
+    Null
+    ^
+
+=== case-sensitive: NULL is not a keyword
+NULL
+---
+Unexpected character "N" on line 1.
+
+    NULL
+    ^
+
 === duplicate keys
 {
   foo: 1
