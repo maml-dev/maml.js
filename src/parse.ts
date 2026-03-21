@@ -109,9 +109,7 @@ export function parse(source: string): any {
           ),
         )
       } else if ((ch as string) < '\x1F') {
-        throw new SyntaxError(
-          errorSnippet(`Unescaped control character ${JSON.stringify(ch)}`),
-        )
+        throw new SyntaxError(errorSnippet())
       } else {
         str += ch
       }

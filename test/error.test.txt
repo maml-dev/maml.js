@@ -22,6 +22,16 @@ Use """ for multiline strings or escape newlines with "\n" on line 1.
     "Hello
     ......^
 
+=== newline in string literal
+"line1
+line2"
+---
+Use """ for multiline strings or escape newlines with "\n" on line 1.
+
+    "line1
+    ......^
+
+
 === backslash at end of string
 "abc\
 ---

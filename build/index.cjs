@@ -91,9 +91,7 @@ function parse(source) {
             )
           );
         if (ch < "")
-          throw new SyntaxError(
-            errorSnippet("Unescaped control character ".concat(JSON.stringify(ch)))
-          );
+          throw new SyntaxError(errorSnippet());
         str += ch;
       }
     return next(), str;
