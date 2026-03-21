@@ -80,4 +80,14 @@ describe('extra', () => {
     const output = parse('"""string\r"""')
     expect(output).toStrictEqual('string\r')
   })
+
+  test('raw string with leading LF', () => {
+    const output = parse('"""\nstring\r\n"""')
+    expect(output).toStrictEqual('string\r\n')
+  })
+
+  test('raw string with leading CRLF', () => {
+    const output = parse('"""\r\nstring\r\n"""')
+    expect(output).toStrictEqual('string\r\n')
+  })
 })
