@@ -599,6 +599,15 @@ false
 ---
 {"a-b":1,"a b":2,"a:b":3,"a,b":4}
 
+=== object with special keys
+{
+  toString: 1
+  length: 2
+}
+---
+{"toString": 1, "length": 2}
+
+
 === unicode values with newline separators
 {
   "text": "Привет"
