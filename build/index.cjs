@@ -68,7 +68,7 @@ function parse(source) {
           if (hex.length === 0)
             throw new SyntaxError(errorSnippet(errorMap.u));
           let codePoint = parseInt(hex, 16);
-          if (codePoint > 1114111)
+          if (codePoint > 1114111 || codePoint >= 55296 && codePoint <= 57343)
             throw new SyntaxError(errorSnippet(errorMap.u + " (out of range)"));
           str += String.fromCodePoint(codePoint);
         } else {

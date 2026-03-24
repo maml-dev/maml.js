@@ -84,7 +84,10 @@ export function parse(source: string): any {
             throw new SyntaxError(errorSnippet(errorMap.u))
           }
           const codePoint = parseInt(hex, 16)
-          if (codePoint > 0x10ffff) {
+          if (
+            codePoint > 0x10ffff ||
+            (codePoint >= 0xd800 && codePoint <= 0xdfff)
+          ) {
             throw new SyntaxError(errorSnippet(errorMap.u + ' (out of range)'))
           }
           str += String.fromCodePoint(codePoint)

@@ -575,3 +575,13 @@ Duplicate key "foo" on line 3.
 
       "foo": 2
     ..^
+
+=== partial keyword in object value
+{a: trux}
+---
+Unexpected character "x" on line 1.
+
+=== invalid escape in quoted key
+{"\q": 1}
+---
+Invalid escape sequence "q" on line 1.
