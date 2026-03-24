@@ -61,6 +61,19 @@ describe('extra', () => {
     expect('MAML' in globalThis).toBeTruthy()
   })
 
+  test('string allows literal tab', () => {
+    const output = parse('"hello\tworld"')
+    expect(output).toStrictEqual('hello\tworld')
+  })
+
+  test('string rejects control char U+001F', () => {
+    expect(() => parse('"\x1F"')).toThrow()
+  })
+
+  test('string rejects DEL U+007F', () => {
+    expect(() => parse('"\x7F"')).toThrow()
+  })
+
   test('raw string with CRLF newlines', () => {
     const output = parse('"""line1\r\nline2\r\nline3"""')
     expect(output).toStrictEqual('line1\r\nline2\r\nline3')
