@@ -897,3 +897,63 @@ Violets are blue.
 }
 ---
 {"toString": 1, "length": 2}
+
+=== unicode escape: minimum code point U+0000 short form
+"\u{0}"
+---
+"\u0000"
+
+=== unicode escape: DEL via escape U+007F
+"\u{7F}"
+---
+"\u007F"
+
+=== unicode escape: last code point before surrogate range U+D7FF
+"\u{D7FF}"
+---
+"\uD7FF"
+
+=== unicode escape: first code point after surrogate range U+E000
+"\u{E000}"
+---
+"\uE000"
+
+=== unicode escape: last BMP code point U+FFFF
+"\u{FFFF}"
+---
+"\uFFFF"
+
+=== unicode escape: first supplementary plane code point U+10000
+"\u{10000}"
+---
+"\uD800\uDC00"
+
+=== unicode escape: leading zeros in hex digits
+"\u{00263A}"
+---
+"\u263A"
+
+=== individual escape: double quote
+"\""
+---
+"\""
+
+=== individual escape: backslash
+"\\"
+---
+"\\"
+
+=== individual escape: newline
+"\n"
+---
+"\n"
+
+=== individual escape: carriage return
+"\r"
+---
+"\r"
+
+=== individual escape: tab
+"\t"
+---
+"\t"

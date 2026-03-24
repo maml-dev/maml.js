@@ -108,4 +108,27 @@ describe('extra', () => {
     const output = parse('"""\rstring\r\n"""')
     expect(output).toStrictEqual('\rstring\r\n')
   })
+
+  test('unicode scalar value boundaries parse correctly', () => {
+    expect(parse('"\\u{0}"')).toBe(String.fromCodePoint(0x0000))
+    expect(parse('"\\u{D7FF}"')).toBe(String.fromCodePoint(0xD7FF))
+    expect(parse('"\\u{E000}"')).toBe(String.fromCodePoint(0xE000))
+    expect(parse('"\\u{FFFF}"')).toBe(String.fromCodePoint(0xFFFF))
+    expect(parse('"\\u{10000}"')).toBe(String.fromCodePoint(0x10000))
+    expect(parse('"\\u{10FFFF}"')).toBe(String.fromCodePoint(0x10FFFF))
+  })
+
+  test('surrogate code points are rejected', () => {
+    expect(() => parse('"\\u{D800}"')).toThrow('out of range')
+    expect(() => parse('"\\u{DBFF}"')).toThrow('out of range')
+    expect(() => parse('"\\u{DC00}"')).toThrow('out of range')
+    expect(() => parse('"\\u{DFFF}"')).toThrow('out of range')
+  })
+
+  test('all control characters below U+0020 are rejected unescaped (except tab)', () => {
+    for (let code = 0; code < 0x20; code++) {
+      if (code === 0x09) continue // tab is allowed
+      expect(() => parse(`"${String.fromCharCode(code)}"`)).toThrow()
+    }
+  })
 })

@@ -60,6 +60,27 @@ describe('stringify', () => {
     expect(stringify('a\rb')).toBe('"a\\rb"')
   })
 
+  test('unicode scalar value boundary characters pass through as-is', () => {
+    const d7ff = String.fromCodePoint(0xD7FF)
+    expect(stringify(d7ff)).toBe(`"${d7ff}"`)
+    const e000 = String.fromCodePoint(0xE000)
+    expect(stringify(e000)).toBe(`"${e000}"`)
+    const sup = String.fromCodePoint(0x10000)
+    expect(stringify(sup)).toBe(`"${sup}"`)
+    const max = String.fromCodePoint(0x10FFFF)
+    expect(stringify(max)).toBe(`"${max}"`)
+  })
+
+  test('all control characters 0x01-0x1F except tab are escaped', () => {
+    for (let code = 1; code < 0x20; code++) {
+      if (code === 0x09) continue // tab uses \t
+      if (code === 0x0A) continue // newline uses \n
+      if (code === 0x0D) continue // CR uses \r
+      const result = stringify(String.fromCharCode(code))
+      expect(result).toBe(`"\\u{${code.toString(16).toUpperCase()}}"`)
+    }
+  })
+
   test('array', () => {
     const output = stringify([1, 2, 3])
     expect(output).toStrictEqual(`[

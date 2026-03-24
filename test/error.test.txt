@@ -576,6 +576,110 @@ Duplicate key "foo" on line 3.
       "foo": 2
     ..^
 
+=== unicode escape: high surrogate start U+D800
+"\u{D800}"
+---
+Invalid escape sequence (out of range) on line 1.
+
+    "\u{D800}"
+    ........^
+
+=== unicode escape: high surrogate end U+DBFF
+"\u{DBFF}"
+---
+Invalid escape sequence (out of range) on line 1.
+
+    "\u{DBFF}"
+    ........^
+
+=== unicode escape: low surrogate start U+DC00
+"\u{DC00}"
+---
+Invalid escape sequence (out of range) on line 1.
+
+    "\u{DC00}"
+    ........^
+
+=== unicode escape: low surrogate end U+DFFF
+"\u{DFFF}"
+---
+Invalid escape sequence (out of range) on line 1.
+
+    "\u{DFFF}"
+    ........^
+
+=== unicode escape: middle of surrogate range U+D900
+"\u{D900}"
+---
+Invalid escape sequence (out of range) on line 1.
+
+    "\u{D900}"
+    ........^
+
+=== unicode escape: 6 hex digits above max code point U+FFFFFF
+"\u{FFFFFF}"
+---
+Invalid escape sequence (out of range) on line 1.
+
+    "\u{FFFFFF}"
+    ..........^
+
+=== invalid escape: lowercase hex digits not accepted
+"\u{263a}"
+---
+Invalid escape sequence "a" on line 1.
+
+    "\u{263a}"
+    .......^
+
+=== invalid escape: \b not supported (unlike JSON)
+"\b"
+---
+Invalid escape sequence "b" on line 1.
+
+    "\b"
+    ..^
+
+=== invalid escape: \f not supported (unlike JSON)
+"\f"
+---
+Invalid escape sequence "f" on line 1.
+
+    "\f"
+    ..^
+
+=== invalid escape: \/ solidus not supported (unlike JSON)
+"\/"
+---
+Invalid escape sequence "/" on line 1.
+
+    "\/"
+    ..^
+
+=== invalid escape: \v not supported
+"\v"
+---
+Invalid escape sequence "v" on line 1.
+
+    "\v"
+    ..^
+
+=== invalid escape: \0 not supported
+"\0"
+---
+Invalid escape sequence "0" on line 1.
+
+    "\0"
+    ..^
+
+=== invalid escape: \a not supported
+"\a"
+---
+Invalid escape sequence "a" on line 1.
+
+    "\a"
+    ..^
+
 === partial keyword in object value
 {a: trux}
 ---
