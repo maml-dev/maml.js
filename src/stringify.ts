@@ -11,9 +11,37 @@ function doStringify(value: any, level: number): string {
       return JSON.stringify(value)
 
     case 'boolean':
-    case 'bigint':
-    case 'number':
       return `${value}`
+
+    case 'bigint': {
+      const I64_MIN = -(2n ** 63n)
+      const I64_MAX = 2n ** 63n - 1n
+      if (value < I64_MIN || value > I64_MAX) {
+        throw new Error(
+          `Integer ${value} is outside the 64-bit signed integer range`,
+        )
+      }
+      return `${value}`
+    }
+
+    case 'number': {
+      if (!Number.isFinite(value)) {
+        throw new Error(`Cannot encode ${value} as a MAML value`)
+      }
+      const str = `${value}`
+      // If the string representation looks like an integer (no '.' or 'e'),
+      // it must be a safe integer to avoid silent precision loss
+      if (
+        !str.includes('.') &&
+        !str.includes('e') &&
+        !Number.isSafeInteger(value)
+      ) {
+        throw new Error(
+          `Integer ${value} cannot be represented losslessly as a number, use BigInt instead`,
+        )
+      }
+      return str
+    }
 
     case 'null':
     case 'undefined':

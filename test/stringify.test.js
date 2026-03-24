@@ -74,4 +74,55 @@ describe('stringify', () => {
   test('unsupported value', () => {
     expect(() => stringify(Symbol('x'))).toThrow()
   })
+
+  describe('integer safety', () => {
+    test('NaN throws', () => {
+      expect(() => stringify(NaN)).toThrow('Cannot encode NaN')
+    })
+
+    test('Infinity throws', () => {
+      expect(() => stringify(Infinity)).toThrow('Cannot encode Infinity')
+    })
+
+    test('-Infinity throws', () => {
+      expect(() => stringify(-Infinity)).toThrow('Cannot encode -Infinity')
+    })
+
+    test('unsafe integer throws', () => {
+      expect(() => stringify(2 ** 53)).toThrow('use BigInt')
+    })
+
+    test('negative unsafe integer throws', () => {
+      expect(() => stringify(-(2 ** 53))).toThrow('use BigInt')
+    })
+
+    test('bigint exceeding 64-bit max throws', () => {
+      expect(() => stringify(2n ** 63n)).toThrow('outside the 64-bit')
+    })
+
+    test('bigint below 64-bit min throws', () => {
+      expect(() => stringify(-(2n ** 63n) - 1n)).toThrow('outside the 64-bit')
+    })
+
+    test('MAX_SAFE_INTEGER is fine', () => {
+      expect(stringify(Number.MAX_SAFE_INTEGER)).toBe('9007199254740991')
+    })
+
+    test('MIN_SAFE_INTEGER is fine', () => {
+      expect(stringify(Number.MIN_SAFE_INTEGER)).toBe('-9007199254740991')
+    })
+
+    test('bigint at 64-bit max boundary is fine', () => {
+      expect(stringify(2n ** 63n - 1n)).toBe('9223372036854775807')
+    })
+
+    test('bigint at 64-bit min boundary is fine', () => {
+      expect(stringify(-(2n ** 63n))).toBe('-9223372036854775808')
+    })
+
+    test('floats are not affected by integer checks', () => {
+      expect(stringify(1.5)).toBe('1.5')
+      expect(stringify(1e100)).toBe('1e+100')
+    })
+  })
 })
