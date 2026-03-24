@@ -219,7 +219,14 @@ function parse(source) {
   function toSafeNumber(str) {
     if (str == "-0") return -0;
     let num = Number(str);
-    return num >= Number.MIN_SAFE_INTEGER && num <= Number.MAX_SAFE_INTEGER ? num : BigInt(str);
+    if (num >= Number.MIN_SAFE_INTEGER && num <= Number.MAX_SAFE_INTEGER)
+      return num;
+    let big = BigInt(str), I64_MIN = -(2n ** 63n), I64_MAX = 2n ** 63n - 1n;
+    if (big < I64_MIN || big > I64_MAX)
+      throw new SyntaxError(
+        `Integer ${str} is outside the 64-bit signed integer range on line ${lineNumber}.`
+      );
+    return big;
   }
   function expectValue(value2) {
     if (value2 === void 0)

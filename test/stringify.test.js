@@ -105,19 +105,21 @@ describe('stringify', () => {
     })
 
     test('MAX_SAFE_INTEGER is fine', () => {
-      expect(stringify(Number.MAX_SAFE_INTEGER)).toBe('9007199254740991')
+      expect(stringify(Number.MAX_SAFE_INTEGER)).toBe(`${Number.MAX_SAFE_INTEGER}`)
     })
 
     test('MIN_SAFE_INTEGER is fine', () => {
-      expect(stringify(Number.MIN_SAFE_INTEGER)).toBe('-9007199254740991')
+      expect(stringify(Number.MIN_SAFE_INTEGER)).toBe(`${Number.MIN_SAFE_INTEGER}`)
     })
 
     test('bigint at 64-bit max boundary is fine', () => {
-      expect(stringify(2n ** 63n - 1n)).toBe('9223372036854775807')
+      const I64_MAX = 2n ** 63n - 1n
+      expect(stringify(I64_MAX)).toBe(`${I64_MAX}`)
     })
 
     test('bigint at 64-bit min boundary is fine', () => {
-      expect(stringify(-(2n ** 63n))).toBe('-9223372036854775808')
+      const I64_MIN = -(2n ** 63n)
+      expect(stringify(I64_MIN)).toBe(`${I64_MIN}`)
     })
 
     test('floats are not affected by integer checks', () => {

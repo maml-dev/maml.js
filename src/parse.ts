@@ -360,9 +360,18 @@ export function parse(source: string): any {
   function toSafeNumber(str: string) {
     if (str == '-0') return -0
     const num = Number(str)
-    return num >= Number.MIN_SAFE_INTEGER && num <= Number.MAX_SAFE_INTEGER
-      ? num
-      : BigInt(str)
+    if (num >= Number.MIN_SAFE_INTEGER && num <= Number.MAX_SAFE_INTEGER) {
+      return num
+    }
+    const big = BigInt(str)
+    const I64_MIN = -(2n ** 63n)
+    const I64_MAX = 2n ** 63n - 1n
+    if (big < I64_MIN || big > I64_MAX) {
+      throw new SyntaxError(
+        `Integer ${str} is outside the 64-bit signed integer range on line ${lineNumber}.`,
+      )
+    }
+    return big
   }
 
   function expectValue(value: unknown) {
