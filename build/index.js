@@ -64,7 +64,7 @@ function parse(source) {
         if (ch === `
 `)
           throw new SyntaxError(errorSnippet());
-        if (ch < "")
+        if (ch < " " || ch === "\x7F")
           throw new SyntaxError(errorSnippet());
         str += ch;
       }

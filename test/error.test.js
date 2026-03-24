@@ -55,4 +55,12 @@ describe('error', () => {
   test('unescaped \u0000 inside string', () => {
     expect(() => parse('"\u0000"')).toThrow('Unexpected character "\\u0000" on line 1.')
   })
+
+  test('unescaped U+001F inside string', () => {
+    expect(() => parse('"\u001F"')).toThrow('on line 1.')
+  })
+
+  test('unescaped U+007F (DEL) inside string', () => {
+    expect(() => parse('"\u007F"')).toThrow('on line 1.')
+  })
 })
