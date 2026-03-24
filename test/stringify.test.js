@@ -37,6 +37,29 @@ describe('stringify', () => {
     expect(output).toStrictEqual(`"foo"`)
   })
 
+  test('string with quote and backslash', () => {
+    expect(stringify('say "hi"')).toBe('"say \\"hi\\""')
+    expect(stringify('a\\b')).toBe('"a\\\\b"')
+  })
+
+  test('string with tab', () => {
+    const output = stringify('hello\tworld')
+    expect(output).toBe('"hello\\tworld"')
+  })
+
+  test('string with control characters', () => {
+    expect(stringify('\x00')).toBe('"\\u{0}"')
+    expect(stringify('\x08')).toBe('"\\u{8}"')
+    expect(stringify('\x0C')).toBe('"\\u{C}"')
+    expect(stringify('\x1F')).toBe('"\\u{1F}"')
+    expect(stringify('\x7F')).toBe('"\\u{7F}"')
+  })
+
+  test('string with newline and carriage return', () => {
+    expect(stringify('a\nb')).toBe('"a\\nb"')
+    expect(stringify('a\rb')).toBe('"a\\rb"')
+  })
+
   test('array', () => {
     const output = stringify([1, 2, 3])
     expect(output).toStrictEqual(`[

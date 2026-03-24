@@ -8,7 +8,7 @@ function doStringify(value: any, level: number): string {
 
   switch (kind) {
     case 'string':
-      return JSON.stringify(value)
+      return quoteString(value)
 
     case 'boolean':
       return `${value}`
@@ -86,9 +86,25 @@ function doStringify(value: any, level: number): string {
   }
 }
 
+function quoteString(s: string): string {
+  let out = '"'
+  for (const c of s) {
+    const code = c.codePointAt(0)!
+    if (c === '"') out += '\\"'
+    else if (c === '\\') out += '\\\\'
+    else if (c === '\n') out += '\\n'
+    else if (c === '\r') out += '\\r'
+    else if (c === '\t') out += '\\t'
+    else if (code < 0x20 || code === 0x7f)
+      out += `\\u{${code.toString(16).toUpperCase()}}`
+    else out += c
+  }
+  return out + '"'
+}
+
 const KEY_RE = /^[A-Za-z0-9_-]+$/
 function doKeyStringify(key: string) {
-  return KEY_RE.test(key) ? key : JSON.stringify(key)
+  return KEY_RE.test(key) ? key : quoteString(key)
 }
 
 function getIndent(level: number) {

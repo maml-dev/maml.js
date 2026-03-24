@@ -265,7 +265,7 @@ function doStringify(value, level) {
   let kind = value === null ? "null" : Array.isArray(value) ? "array" : typeof value;
   switch (kind) {
     case "string":
-      return JSON.stringify(value);
+      return quoteString(value);
     case "boolean":
       return `${value}`;
     case "bigint": {
@@ -318,9 +318,18 @@ function doStringify(value, level) {
       throw new Error(`Unsupported value type: ${kind}`);
   }
 }
+function quoteString(s) {
+  let out = '"';
+  for (let c of s) {
+    let code = c.codePointAt(0);
+    c === '"' ? out += '\\"' : c === "\\" ? out += "\\\\" : c === `
+` ? out += "\\n" : c === "\r" ? out += "\\r" : c === "	" ? out += "\\t" : code < 32 || code === 127 ? out += `\\u{${code.toString(16).toUpperCase()}}` : out += c;
+  }
+  return out + '"';
+}
 var KEY_RE = /^[A-Za-z0-9_-]+$/;
 function doKeyStringify(key) {
-  return KEY_RE.test(key) ? key : JSON.stringify(key);
+  return KEY_RE.test(key) ? key : quoteString(key);
 }
 function getIndent(level) {
   return " ".repeat(2 * level);
