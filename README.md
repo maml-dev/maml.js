@@ -22,7 +22,7 @@ Or use the prebuilt bundle [`maml.min.js`](./build/maml.min.js).
 ### Node.js, Deno, Bun
 
 ```ts
-import { parse, stringify } from 'maml.js'
+import { parse, stringify } from 'maml'
 
 const data = parse(`{
   project: "MAML"
