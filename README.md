@@ -1,4 +1,4 @@
-# maml.js
+# maml
 
 A tiny, modern, well‑tested implementation of the [MAML](https://maml.dev) data format for JavaScript/TypeScript.
 
@@ -12,7 +12,7 @@ A tiny, modern, well‑tested implementation of the [MAML](https://maml.dev) dat
 ## Installation
 
 ```
-npm install maml.js
+npm install maml
 ```
 
 Or use the prebuilt bundle [`maml.min.js`](./build/maml.min.js).

@@ -1,6 +1,6 @@
 {
-  "name": "maml.js",
-  "version": "0.0.4",
+  "name": "maml",
+  "version": "1.0.0",
   "description": "MAML parser",
   "type": "module",
   "main": "build/index.cjs",
