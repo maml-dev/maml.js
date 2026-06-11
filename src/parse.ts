@@ -306,13 +306,7 @@ export function parse(source: string): any {
       }
     }
     next()
-    if (
-      isWhitespace(ch) ||
-      ch === ',' ||
-      ch === '}' ||
-      ch === ']' ||
-      done
-    ) {
+    if (isWhitespace(ch) || ch === ',' || ch === '}' || ch === ']' || done) {
       return value
     }
     throw new SyntaxError(errorSnippet())
