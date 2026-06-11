@@ -51,6 +51,21 @@ describe('parse', () => {
 })
 
 describe('extra', () => {
+  test('true without extra symbols', () => {
+    const output = parse('true')
+    expect(output).toStrictEqual(true)
+  })
+
+  test('false without extra symbols', () => {
+    const output = parse('false')
+    expect(output).toStrictEqual(false)
+  })
+
+  test('null without extra symbols', () => {
+    const output = parse('null')
+    expect(output).toStrictEqual(null)
+  })
+
   test('bigint', () => {
     const output = parse(`9007199254740992`) // Number.MAX_SAFE_INTEGER + 1
     expect(output).toStrictEqual(9007199254740992n)

@@ -311,7 +311,7 @@ export function parse(source: string): any {
       ch === ',' ||
       ch === '}' ||
       ch === ']' ||
-      ch === undefined
+      done
     ) {
       return value
     }
